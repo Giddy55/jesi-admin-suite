@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
 
 const navigationItems = [
   { title: "Dashboard", url: "/dashboard", icon: BarChart3 },
@@ -47,6 +48,7 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { toast } = useToast();
   const currentPath = location.pathname;
   
   const isCollapsed = state === "collapsed";
@@ -61,6 +63,10 @@ export function AppSidebar() {
 
   const handleLogout = () => {
     logout();
+    toast({
+      title: "Logged out successfully",
+      description: "You have been signed out of your account.",
+    });
   };
 
   return (
