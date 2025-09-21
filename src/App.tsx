@@ -7,6 +7,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import LoginPage from "@/components/auth/LoginPage";
 import Dashboard from "@/pages/Dashboard";
 import Schools from "@/pages/Schools";
+import ContentCurriculum from "@/pages/ContentCurriculum";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,10 +43,7 @@ const App = () => (
             path="/content" 
             element={
               <ProtectedRoute>
-                <div className="p-6">
-                  <h1 className="text-3xl font-bold">Content & Curriculum</h1>
-                  <p className="text-muted-foreground mt-2">Coming soon...</p>
-                </div>
+                <ContentCurriculum />
               </ProtectedRoute>
             } 
           />
