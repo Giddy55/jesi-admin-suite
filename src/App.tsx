@@ -11,6 +11,7 @@ import ContentCurriculum from "@/pages/ContentCurriculum";
 import AIQuality from "@/pages/AIQuality";
 import Compliance from "@/pages/Compliance";
 import Analytics from "@/pages/Analytics";
+import Billing from "@/pages/Billing";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -78,10 +79,7 @@ const App = () => (
             path="/billing" 
             element={
               <ProtectedRoute>
-                <div className="p-6">
-                  <h1 className="text-3xl font-bold">Billing</h1>
-                  <p className="text-muted-foreground mt-2">Coming soon...</p>
-                </div>
+                <Billing />
               </ProtectedRoute>
             } 
           />
