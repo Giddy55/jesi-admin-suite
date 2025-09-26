@@ -13,6 +13,7 @@ import Compliance from "@/pages/Compliance";
 import Analytics from "@/pages/Analytics";
 import Billing from "@/pages/Billing";
 import Support from "@/pages/Support";
+import PlatformHealth from "@/pages/PlatformHealth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -96,10 +97,7 @@ const App = () => (
             path="/health" 
             element={
               <ProtectedRoute>
-                <div className="p-6">
-                  <h1 className="text-3xl font-bold">Platform Health</h1>
-                  <p className="text-muted-foreground mt-2">Coming soon...</p>
-                </div>
+                <PlatformHealth />
               </ProtectedRoute>
             } 
           />
