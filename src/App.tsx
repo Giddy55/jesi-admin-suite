@@ -14,6 +14,7 @@ import Analytics from "@/pages/Analytics";
 import Billing from "@/pages/Billing";
 import Support from "@/pages/Support";
 import PlatformHealth from "@/pages/PlatformHealth";
+import Settings from "@/pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -105,10 +106,7 @@ const App = () => (
             path="/settings" 
             element={
               <ProtectedRoute>
-                <div className="p-6">
-                  <h1 className="text-3xl font-bold">Settings</h1>
-                  <p className="text-muted-foreground mt-2">Coming soon...</p>
-                </div>
+                <Settings />
               </ProtectedRoute>
             } 
           />
