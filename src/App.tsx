@@ -12,6 +12,7 @@ import AIQuality from "@/pages/AIQuality";
 import Compliance from "@/pages/Compliance";
 import Analytics from "@/pages/Analytics";
 import Billing from "@/pages/Billing";
+import Support from "@/pages/Support";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -87,10 +88,7 @@ const App = () => (
             path="/support" 
             element={
               <ProtectedRoute>
-                <div className="p-6">
-                  <h1 className="text-3xl font-bold">Support & Communications</h1>
-                  <p className="text-muted-foreground mt-2">Coming soon...</p>
-                </div>
+                <Support />
               </ProtectedRoute>
             } 
           />
