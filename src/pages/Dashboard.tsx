@@ -24,35 +24,28 @@ export default function Dashboard() {
       title: 'Onboard School',
       description: 'Add a new school to the platform',
       icon: Plus,
-      action: '/schools/new',
+      action: '/schools',
       variant: 'primary' as const
-    },
-    {
-      title: 'Review Content Approvals',
-      description: '8 items pending approval',
-      icon: FileCheck,
-      action: '/content?status=pending_approval',
-      variant: 'secondary' as const
-    },
-    {
-      title: 'Resolve AI Flags',
-      description: '3 high priority flags',
-      icon: Bot,
-      action: '/ai-quality?severity=high',
-      variant: 'destructive' as const
     },
     {
       title: 'View Renewals',
       description: '12 subscriptions expiring soon',
       icon: Calendar,
-      action: '/billing?renewal=soon',
-      variant: 'outline' as const
+      action: '/billing',
+      variant: 'secondary' as const
     },
     {
       title: 'Send Announcement',
       description: 'Broadcast to all schools',
       icon: MessageCircle,
-      action: '/support/announcements/new',
+      action: '/support',
+      variant: 'outline' as const
+    },
+    {
+      title: 'View Analytics',
+      description: 'Check performance metrics',
+      icon: TrendingUp,
+      action: '/analytics',
       variant: 'outline' as const
     }
   ];
@@ -160,12 +153,12 @@ export default function Dashboard() {
                     <div className="flex items-start gap-3">
                       <div className={`p-2 rounded-lg ${
                         action.variant === 'primary' ? 'bg-primary/10' :
-                        action.variant === 'destructive' ? 'bg-destructive/10' :
+                        action.variant === 'secondary' ? 'bg-secondary/10' :
                         'bg-muted'
                       }`}>
                         <action.icon className={`h-4 w-4 ${
                           action.variant === 'primary' ? 'text-primary' :
-                          action.variant === 'destructive' ? 'text-destructive' :
+                          action.variant === 'secondary' ? 'text-secondary-foreground' :
                           'text-muted-foreground'
                         }`} />
                       </div>
