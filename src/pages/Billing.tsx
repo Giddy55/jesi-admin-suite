@@ -116,6 +116,14 @@ const mockPaymentProviders = [
 export default function Billing() {
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange | undefined>();
   const [editingPlan, setEditingPlan] = useState<any>(null);
+  const [selectedPlan, setSelectedPlan] = useState<string>('all');
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+
+  const filteredSubscriptions = mockSubscriptions.filter(sub => {
+    const matchesPlan = selectedPlan === 'all' || sub.plan.toLowerCase() === selectedPlan.toLowerCase();
+    const matchesStatus = selectedStatus === 'all' || sub.status === selectedStatus;
+    return matchesPlan && matchesStatus;
+  });
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
@@ -233,6 +241,34 @@ export default function Billing() {
               <CardDescription>Manage all school subscriptions and their status</CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                <Select value={selectedPlan} onValueChange={setSelectedPlan}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="All Plans" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Plans</SelectItem>
+                    <SelectItem value="basic">Basic</SelectItem>
+                    <SelectItem value="standard">Standard</SelectItem>
+                    <SelectItem value="premium">Premium</SelectItem>
+                    <SelectItem value="enterprise">Enterprise</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="All Statuses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="trial">Trial</SelectItem>
+                    <SelectItem value="expired">Expired</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -246,7 +282,7 @@ export default function Billing() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {mockSubscriptions.map((sub) => (
+                  {filteredSubscriptions.map((sub) => (
                     <TableRow key={sub.id}>
                       <TableCell className="font-medium">{sub.schoolName}</TableCell>
                       <TableCell>{sub.plan}</TableCell>
