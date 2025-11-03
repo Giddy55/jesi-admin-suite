@@ -15,7 +15,7 @@ import {
   Crown,
   AlertCircle
 } from 'lucide-react';
-import { mockSchools, GHANA_REGIONS, type School } from '@/lib/mockData';
+import { mockSchools, GHANA_REGIONS, SCHOOL_TYPES, DISTRICTS, type School } from '@/lib/mockData';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,14 +36,18 @@ export default function Schools() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [selectedSchoolType, setSelectedSchoolType] = useState<string>('all');
+  const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
 
   const filteredSchools = mockSchools.filter(school => {
     const matchesSearch = school.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          school.ges_registration_no.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRegion = selectedRegion === 'all' || school.region === selectedRegion;
     const matchesStatus = selectedStatus === 'all' || school.subscription_status === selectedStatus;
+    const matchesSchoolType = selectedSchoolType === 'all' || school.school_type === selectedSchoolType;
+    const matchesDistrict = selectedDistrict === 'all' || school.district === selectedDistrict;
     
-    return matchesSearch && matchesRegion && matchesStatus;
+    return matchesSearch && matchesRegion && matchesStatus && matchesSchoolType && matchesDistrict;
   });
 
   const getStatusBadge = (status: School['subscription_status']) => {
@@ -105,7 +109,7 @@ export default function Schools() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{mockSchools.filter(s => s.subscription_status === 'active').length}</p>
-                <p className="text-sm text-muted-foreground">Active Schools</p>
+                <p className="text-sm text-muted-foreground">Active Subscriptions</p>
               </div>
             </div>
           </CardContent>
@@ -133,7 +137,7 @@ export default function Schools() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{mockSchools.filter(s => s.subscription_status === 'expired').length}</p>
-                <p className="text-sm text-muted-foreground">Expired</p>
+                <p className="text-sm text-muted-foreground">Expired Subscriptions</p>
               </div>
             </div>
           </CardContent>
@@ -181,6 +185,30 @@ export default function Schools() {
                 <SelectItem value="active">Active</SelectItem>
                 <SelectItem value="trial">Trial</SelectItem>
                 <SelectItem value="expired">Expired</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedSchoolType} onValueChange={setSelectedSchoolType}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="School Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                {SCHOOL_TYPES.map(type => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedDistrict} onValueChange={setSelectedDistrict}>
+              <SelectTrigger className="w-full sm:w-48">
+                <SelectValue placeholder="District" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Districts</SelectItem>
+                {DISTRICTS.map(district => (
+                  <SelectItem key={district} value={district}>{district}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

@@ -6,6 +6,7 @@ export interface School {
   ges_registration_no: string;
   region: string;
   district: string;
+  school_type: 'Public' | 'Private' | 'Mission' | 'International';
   address: string;
   contact_email: string;
   contact_phone: string;
@@ -78,6 +79,7 @@ export const mockSchools: School[] = [
     ges_registration_no: 'GES-AIS-2020-001',
     region: 'Greater Accra',
     district: 'Accra Metropolitan',
+    school_type: 'International',
     address: '123 Liberation Road, Accra',
     contact_email: 'admin@ais.edu.gh',
     contact_phone: '+233 30 123 4567',
@@ -93,6 +95,7 @@ export const mockSchools: School[] = [
     ges_registration_no: 'GES-VRTI-2019-045',
     region: 'Volta',
     district: 'Ho Municipal',
+    school_type: 'Public',
     address: 'P.O. Box 123, Ho',
     contact_email: 'info@vrti.edu.gh',
     contact_phone: '+233 36 456 7890',
@@ -108,6 +111,7 @@ export const mockSchools: School[] = [
     ges_registration_no: 'GES-NPS-2021-089',
     region: 'Northern',
     district: 'Tamale Metropolitan',
+    school_type: 'Private',
     address: 'Education Ridge, Tamale',
     contact_email: 'contact@nps.edu.gh',
     contact_phone: '+233 37 234 5678',
@@ -123,6 +127,7 @@ export const mockSchools: School[] = [
     ges_registration_no: 'GES-CRGSH-2018-156',
     region: 'Central',
     district: 'Cape Coast Metropolitan',
+    school_type: 'Public',
     address: 'University Road, Cape Coast',
     contact_email: 'admin@crgsh.edu.gh',
     contact_phone: '+233 33 345 6789',
@@ -138,6 +143,7 @@ export const mockSchools: School[] = [
     ges_registration_no: 'GES-WHA-2022-203',
     region: 'Western',
     district: 'Sekondi-Takoradi Metropolitan',
+    school_type: 'Private',
     address: 'Hillside Estate, Takoradi',
     contact_email: 'info@wha.edu.gh',
     contact_phone: '+233 31 567 8901',
@@ -310,4 +316,12 @@ export const SUBJECTS = [
 export const GRADE_LEVELS = [
   'Primary 1', 'Primary 2', 'Primary 3', 'Primary 4', 'Primary 5', 'Primary 6',
   'JHS 1', 'JHS 2', 'JHS 3', 'Form 1', 'Form 2', 'Form 3'
+];
+
+export const SCHOOL_TYPES = ['Public', 'Private', 'Mission', 'International'];
+
+export const DISTRICTS = [
+  'Accra Metropolitan', 'Kumasi Metropolitan', 'Tamale Metropolitan',
+  'Sekondi-Takoradi Metropolitan', 'Cape Coast Metropolitan', 'Ho Municipal',
+  'Sunyani Municipal', 'Wa Municipal', 'Bolgatanga Municipal'
 ];
