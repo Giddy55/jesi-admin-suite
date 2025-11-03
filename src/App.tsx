@@ -8,12 +8,10 @@ import LoginPage from "@/components/auth/LoginPage";
 import Dashboard from "@/pages/Dashboard";
 import Schools from "@/pages/Schools";
 import ContentCurriculum from "@/pages/ContentCurriculum";
-import AIQuality from "@/pages/AIQuality";
 import Compliance from "@/pages/Compliance";
 import Analytics from "@/pages/Analytics";
 import Billing from "@/pages/Billing";
 import Support from "@/pages/Support";
-import PlatformHealth from "@/pages/PlatformHealth";
 import Settings from "@/pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -55,14 +53,6 @@ const App = () => (
             } 
           />
           <Route 
-            path="/ai-quality" 
-            element={
-              <ProtectedRoute>
-                <AIQuality />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
             path="/compliance" 
             element={
               <ProtectedRoute>
@@ -91,14 +81,6 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Support />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/health" 
-            element={
-              <ProtectedRoute>
-                <PlatformHealth />
               </ProtectedRoute>
             } 
           />

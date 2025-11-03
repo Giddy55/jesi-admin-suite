@@ -35,12 +35,10 @@ const navigationItems = [
   { title: "Dashboard", url: "/dashboard", icon: BarChart3 },
   { title: "Schools & Users", url: "/schools", icon: Building2 },
   { title: "Content & Curriculum", url: "/content", icon: FileText },
-  { title: "AI Quality", url: "/ai-quality", icon: Bot },
   { title: "Compliance", url: "/compliance", icon: Scale },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Billing", url: "/billing", icon: DollarSign },
   { title: "Support & Comms", url: "/support", icon: MessageSquare },
-  { title: "Platform Health", url: "/health", icon: Activity },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
