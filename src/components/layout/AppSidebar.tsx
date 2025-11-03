@@ -34,7 +34,6 @@ import { useToast } from "@/hooks/use-toast";
 const navigationItems = [
   { title: "Dashboard", url: "/dashboard", icon: BarChart3 },
   { title: "Schools & Users", url: "/schools", icon: Building2 },
-  { title: "Content & Curriculum", url: "/content", icon: FileText },
   { title: "Compliance", url: "/compliance", icon: Scale },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Billing", url: "/billing", icon: DollarSign },
