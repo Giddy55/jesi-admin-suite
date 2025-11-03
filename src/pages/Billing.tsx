@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { DateRange } from "react-day-picker";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Download, Edit, Eye, Plus, Send } from "lucide-react";
+import { CalendarIcon, Download, Edit, Eye, Plus, Send, Filter } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -237,38 +237,47 @@ export default function Billing() {
 
           <Card>
             <CardHeader>
-              <CardTitle>All Subscriptions</CardTitle>
-              <CardDescription>Manage all school subscriptions and their status</CardDescription>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                  <CardTitle>All Subscriptions</CardTitle>
+                  <CardDescription>Manage all school subscriptions and their status</CardDescription>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <Select value={selectedPlan} onValueChange={setSelectedPlan}>
+                      <SelectTrigger className="w-[140px] border-0 bg-transparent shadow-none focus:ring-0">
+                        <SelectValue placeholder="All Plans" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Plans</SelectItem>
+                        <SelectItem value="basic">Basic</SelectItem>
+                        <SelectItem value="standard">Standard</SelectItem>
+                        <SelectItem value="premium">Premium</SelectItem>
+                        <SelectItem value="enterprise">Enterprise</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg">
+                    <Filter className="h-4 w-4 text-muted-foreground" />
+                    <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                      <SelectTrigger className="w-[140px] border-0 bg-transparent shadow-none focus:ring-0">
+                        <SelectValue placeholder="All Statuses" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="active">Active</SelectItem>
+                        <SelectItem value="trial">Trial</SelectItem>
+                        <SelectItem value="expired">Expired</SelectItem>
+                        <SelectItem value="cancelled">Cancelled</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                <Select value={selectedPlan} onValueChange={setSelectedPlan}>
-                  <SelectTrigger className="w-full sm:w-48">
-                    <SelectValue placeholder="All Plans" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Plans</SelectItem>
-                    <SelectItem value="basic">Basic</SelectItem>
-                    <SelectItem value="standard">Standard</SelectItem>
-                    <SelectItem value="premium">Premium</SelectItem>
-                    <SelectItem value="enterprise">Enterprise</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                  <SelectTrigger className="w-full sm:w-48">
-                    <SelectValue placeholder="All Statuses" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Statuses</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="trial">Trial</SelectItem>
-                    <SelectItem value="expired">Expired</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
               <Table>
                 <TableHeader>
                   <TableRow>
