@@ -74,9 +74,9 @@ export default function Analytics() {
       description: 'vs last month'
     },
     {
-      title: 'Lesson Completion Rate',
-      value: '87.3%',
-      change: '+3.2%',
+      title: 'Number of Lesson Notes Generated',
+      value: '12,456',
+      change: '+18%',
       trend: 'up',
       icon: BookOpen,
       description: 'vs last month'
@@ -197,50 +197,27 @@ export default function Analytics() {
         </TabsList>
 
         <TabsContent value="engagement" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="h-5 w-5" />
-                  Monthly Active Users
-                </CardTitle>
-                <CardDescription>Teachers and students engagement trends</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={engagementData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="teachers" stroke="#8884d8" name="Teachers" />
-                    <Line type="monotone" dataKey="students" stroke="#82ca9d" name="Students" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5" />
-                  Lesson Activity
-                </CardTitle>
-                <CardDescription>Monthly lesson completions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={engagementData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    <Area type="monotone" dataKey="lessons" stroke="#ffc658" fill="#ffc658" name="Lessons Completed" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="h-5 w-5" />
+                Monthly Active Users
+              </CardTitle>
+              <CardDescription>Teachers and students engagement trends</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={engagementData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="teachers" stroke="#8884d8" name="Teachers" />
+                  <Line type="monotone" dataKey="students" stroke="#82ca9d" name="Students" />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
           <Card>
             <CardHeader>
