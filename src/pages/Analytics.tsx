@@ -58,6 +58,7 @@ export default function Analytics() {
   const [regionFilter, setRegionFilter] = useState('all');
   const [districtFilter, setDistrictFilter] = useState('all');
   const [schoolFilter, setSchoolFilter] = useState('all');
+  const [academicYearFilter, setAcademicYearFilter] = useState('2024/2025');
 
   // MOCK DATA - Platform Analytics
   const demographicsData = {
@@ -130,9 +131,9 @@ export default function Analytics() {
   // MOCK DATA - Teacher Analytics
   const teacherUsageData = {
     weeklyActive: 87,
-    lessonPlansPerWeek: 4.2,
-    assessmentsPerWeek: 2.8,
-    aiRecommendationsPerWeek: 12.5
+    lessonPlansPerWeek: 4,
+    assessmentsPerWeek: 3,
+    aiRecommendationsPerWeek: 13
   };
 
   const teacherEfficiencyData = {
@@ -150,7 +151,7 @@ export default function Analytics() {
   };
 
   const learningGainsData = {
-    avgImprovement: 12.5,
+    avgImprovement: 13,
     studentsImproving10Plus: 68,
     subjectProgress: [
       { subject: 'Mathematics', progress: 85 },
@@ -174,19 +175,16 @@ export default function Analytics() {
   };
 
   const teacherSatisfactionData = {
-    csat: 4.6,
+    csat: 5,
     nps: 72,
-    supportTicketsPerTeacher: 0.3,
-    featureAdoptionIndex: 8.2
+    supportTicketsPerTeacher: 0,
+    featureAdoptionIndex: 8
   };
 
   // MOCK DATA - Learner Analytics
   const learnerEngagementMetrics = {
-    dau_wau: 45,
     avgSessionDuration: 32,
-    learningDaysPerWeek: 4.2,
-    lessonCompletionRate: 78,
-    homeworkCompletionRate: 82,
+    learningDaysPerWeek: 4,
     streakDays: 12
   };
 
@@ -198,11 +196,11 @@ export default function Analytics() {
       { topic: 'Reading Comp.', score: 88 },
       { topic: 'Biology', score: 75 }
     ],
-    knowledgeGainPrePost: 18.5
+    knowledgeGainPrePost: 19
   };
 
   const selfLearningData = {
-    sessionsPerWeek: 3.2,
+    sessionsPerWeek: 3,
     topSubjects: [
       { subject: 'Mathematics', percentage: 35 },
       { subject: 'Science', percentage: 28 },
@@ -215,9 +213,15 @@ export default function Analytics() {
   const learningOutcomeData = {
     scoreBySubject: [
       { subject: 'Mathematics', primary: 78, jhs: 72, shs: 68 },
-      { subject: 'English', primary: 82, jhs: 79, shs: 75 },
+      { subject: 'English Language', primary: 82, jhs: 79, shs: 75 },
       { subject: 'Science', primary: 75, jhs: 73, shs: 70 },
-      { subject: 'Social Studies', primary: 80, jhs: 76, shs: 72 }
+      { subject: 'Social Studies', primary: 80, jhs: 76, shs: 72 },
+      { subject: 'ICT', primary: 85, jhs: 81, shs: 78 },
+      { subject: 'French', primary: 70, jhs: 68, shs: 65 },
+      { subject: 'RME', primary: 88, jhs: 84, shs: 80 },
+      { subject: 'Creative Arts', primary: 83, jhs: 79, shs: 76 },
+      { subject: 'Physical Education', primary: 90, jhs: 87, shs: 85 },
+      { subject: 'Career Technology', primary: 77, jhs: 74, shs: 71 }
     ]
   };
 
@@ -860,26 +864,14 @@ export default function Analytics() {
                   <CardDescription>Track how actively learners use Jesi AI</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-xs text-muted-foreground mb-2">DAU/WAU</div>
-                      <div className="text-2xl font-bold">{learnerEngagementMetrics.dau_wau}%</div>
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="p-4 bg-muted/30 rounded-lg">
                       <div className="text-xs text-muted-foreground mb-2">Avg Session (min)</div>
                       <div className="text-2xl font-bold">{learnerEngagementMetrics.avgSessionDuration}</div>
                     </div>
                     <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-xs text-muted-foreground mb-2">Days/Week</div>
+                      <div className="text-xs text-muted-foreground mb-2">Learning Days per Week</div>
                       <div className="text-2xl font-bold">{learnerEngagementMetrics.learningDaysPerWeek}</div>
-                    </div>
-                    <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-xs text-muted-foreground mb-2">Lesson Complete</div>
-                      <div className="text-2xl font-bold">{learnerEngagementMetrics.lessonCompletionRate}%</div>
-                    </div>
-                    <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-xs text-muted-foreground mb-2">Homework Complete</div>
-                      <div className="text-2xl font-bold">{learnerEngagementMetrics.homeworkCompletionRate}%</div>
                     </div>
                     <div className="p-4 bg-primary/10 rounded-lg">
                       <div className="text-xs text-muted-foreground mb-2">Streak Days</div>
@@ -967,28 +959,44 @@ export default function Analytics() {
 
               {/* Learning Outcome Metrics */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Award className="h-5 w-5" />
-                    Learning Outcome Metrics
-                  </CardTitle>
-                  <CardDescription>Real educational impact per subject and level</CardDescription>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Award className="h-5 w-5" />
+                      Learning Outcome Metrics
+                    </CardTitle>
+                    <CardDescription>Real educational impact per subject and level</CardDescription>
+                  </div>
+                  <Select value={academicYearFilter} onValueChange={setAcademicYearFilter}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Academic Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="2024/2025">2024/2025</SelectItem>
+                      <SelectItem value="2023/2024">2023/2024</SelectItem>
+                      <SelectItem value="2022/2023">2022/2023</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </CardHeader>
                 <CardContent>
                   <div>
-                    <h4 className="text-sm font-medium mb-4">Academic Score Improvement by Level (Term 1 baseline)</h4>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={learningOutcomeData.scoreBySubject}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="subject" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="primary" fill="#3B82F6" name="Primary" />
-                        <Bar dataKey="jhs" fill="#10B981" name="JHS" />
-                        <Bar dataKey="shs" fill="#F59E0B" name="SHS" />
-                      </BarChart>
-                    </ResponsiveContainer>
+                    <h4 className="text-sm font-medium mb-4">Average Academic Score (Term 1 baseline)</h4>
+                    <div className="overflow-x-auto">
+                      <div style={{ minWidth: '800px' }}>
+                        <ResponsiveContainer width="100%" height={400}>
+                          <BarChart data={learningOutcomeData.scoreBySubject}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="subject" angle={-45} textAnchor="end" height={120} />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="primary" fill="#3B82F6" name="Primary" />
+                            <Bar dataKey="jhs" fill="#10B981" name="JHS" />
+                            <Bar dataKey="shs" fill="#F59E0B" name="SHS" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
