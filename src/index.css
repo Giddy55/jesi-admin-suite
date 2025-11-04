@@ -148,19 +148,19 @@
   }
 
   .status-active {
-    @apply bg-success/10 text-success;
+    @apply bg-success/20 text-success border border-success/30;
   }
 
   .status-pending {
-    @apply bg-warning/10 text-warning;
+    @apply bg-warning/20 text-warning border border-warning/30;
   }
 
   .status-expired {
-    @apply bg-destructive/10 text-destructive;
+    @apply bg-destructive/20 text-destructive border border-destructive/30;
   }
 
   .status-trial {
-    @apply bg-info/10 text-info;
+    @apply bg-info/20 text-info border border-info/30;
   }
 
   /* KPI card styles */

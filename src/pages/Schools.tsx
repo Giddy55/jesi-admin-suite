@@ -58,7 +58,7 @@ export default function Schools() {
     };
     
     return (
-      <Badge className={`status-badge ${variants[status]}`}>
+      <Badge variant="outline" className={`status-badge ${variants[status]}`}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </Badge>
     );
