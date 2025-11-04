@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +15,12 @@ import {
   Crown,
   AlertCircle
 } from 'lucide-react';
-import { mockSchools, GHANA_REGIONS, SCHOOL_TYPES, DISTRICTS, type School } from '@/lib/mockData';
+import { GHANA_REGIONS, SCHOOL_TYPES, DISTRICTS, type School } from '@/lib/mockData';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import AddSchoolDialog from '@/components/schools/AddSchoolDialog';
+import SchoolDetailsDialog from '@/components/schools/SchoolDetailsDialog';
+import { useNavigate } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,13 +38,68 @@ import {
 } from "@/components/ui/select";
 
 export default function Schools() {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [schools, setSchools] = useState<School[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedSchoolType, setSelectedSchoolType] = useState<string>('all');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
 
-  const filteredSchools = mockSchools.filter(school => {
+  useEffect(() => {
+    fetchSchools();
+  }, []);
+
+  const fetchSchools = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('schools')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setSchools((data || []) as School[]);
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: 'Failed to fetch schools',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSuspendSchool = async (schoolId: string) => {
+    try {
+      const { error } = await supabase
+        .from('schools')
+        .update({ subscription_status: 'expired' })
+        .eq('id', schoolId);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Success',
+        description: 'School suspended successfully',
+      });
+
+      fetchSchools();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const filteredSchools = schools.filter(school => {
     const matchesSearch = school.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          school.ges_registration_no.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesRegion = selectedRegion === 'all' || school.region === selectedRegion;
@@ -79,7 +139,7 @@ export default function Schools() {
             Manage educational institutions and their users
           </p>
         </div>
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center gap-2" onClick={() => setAddDialogOpen(true)}>
           <Plus className="h-4 w-4" />
           Add School
         </Button>
@@ -94,7 +154,7 @@ export default function Schools() {
                 <Building2 className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{mockSchools.length}</p>
+                <p className="text-2xl font-bold">{schools.length}</p>
                 <p className="text-sm text-muted-foreground">Total Schools</p>
               </div>
             </div>
@@ -108,7 +168,7 @@ export default function Schools() {
                 <Users className="h-4 w-4 text-success" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{mockSchools.filter(s => s.subscription_status === 'active').length}</p>
+                <p className="text-2xl font-bold">{schools.filter(s => s.subscription_status === 'active').length}</p>
                 <p className="text-sm text-muted-foreground">Active Subscriptions</p>
               </div>
             </div>
@@ -122,7 +182,7 @@ export default function Schools() {
                 <Calendar className="h-4 w-4 text-warning" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{mockSchools.filter(s => s.subscription_status === 'trial').length}</p>
+                <p className="text-2xl font-bold">{schools.filter(s => s.subscription_status === 'trial').length}</p>
                 <p className="text-sm text-muted-foreground">Trial Schools</p>
               </div>
             </div>
@@ -136,7 +196,7 @@ export default function Schools() {
                 <AlertCircle className="h-4 w-4 text-destructive" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{mockSchools.filter(s => s.subscription_status === 'expired').length}</p>
+                <p className="text-2xl font-bold">{schools.filter(s => s.subscription_status === 'expired').length}</p>
                 <p className="text-sm text-muted-foreground">Expired Subscriptions</p>
               </div>
             </div>
@@ -269,12 +329,33 @@ export default function Schools() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>View Details</DropdownMenuItem>
-                          <DropdownMenuItem>Manage Users</DropdownMenuItem>
-                          <DropdownMenuItem>View Analytics</DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {
+                            setSelectedSchool(school);
+                            setDetailsDialogOpen(true);
+                          }}>
+                            View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => toast({
+                            title: 'Coming Soon',
+                            description: 'User management feature is under development',
+                          })}>
+                            Manage Users
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate('/analytics')}>
+                            View Analytics
+                          </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem>Billing Settings</DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
+                          <DropdownMenuItem onClick={() => navigate('/billing')}>
+                            Billing Settings
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            className="text-destructive"
+                            onClick={() => {
+                              if (confirm('Are you sure you want to suspend this school?')) {
+                                handleSuspendSchool(school.id);
+                              }
+                            }}
+                          >
                             Suspend School
                           </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -297,6 +378,18 @@ export default function Schools() {
           )}
         </CardContent>
       </Card>
+
+      <AddSchoolDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+        onSuccess={fetchSchools}
+      />
+
+      <SchoolDetailsDialog
+        school={selectedSchool}
+        open={detailsDialogOpen}
+        onOpenChange={setDetailsDialogOpen}
+      />
     </div>
   );
 }

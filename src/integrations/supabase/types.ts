@@ -14,13 +14,164 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      lesson_notes: {
+        Row: {
+          approved_note: string | null
+          created_at: string
+          generated_note: string
+          id: string
+          lesson_plan_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_note?: string | null
+          created_at?: string
+          generated_note: string
+          id?: string
+          lesson_plan_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_note?: string | null
+          created_at?: string
+          generated_note?: string
+          id?: string
+          lesson_plan_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_notes_lesson_plan_id_fkey"
+            columns: ["lesson_plan_id"]
+            isOneToOne: false
+            referencedRelation: "lesson_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lesson_plans: {
+        Row: {
+          class_level: string
+          created_at: string
+          custom_content: string | null
+          duration: string
+          generated_plan: string
+          id: string
+          status: string
+          strand: string
+          subject: string
+          substrand: string
+          updated_at: string
+          user_id: string
+          week: string
+        }
+        Insert: {
+          class_level: string
+          created_at?: string
+          custom_content?: string | null
+          duration: string
+          generated_plan: string
+          id?: string
+          status?: string
+          strand: string
+          subject: string
+          substrand: string
+          updated_at?: string
+          user_id: string
+          week: string
+        }
+        Update: {
+          class_level?: string
+          created_at?: string
+          custom_content?: string | null
+          duration?: string
+          generated_plan?: string
+          id?: string
+          status?: string
+          strand?: string
+          subject?: string
+          substrand?: string
+          updated_at?: string
+          user_id?: string
+          week?: string
+        }
+        Relationships: []
+      }
+      schools: {
+        Row: {
+          address: string
+          contact_email: string
+          contact_phone: string
+          created_at: string
+          district: string
+          ges_registration_no: string
+          id: string
+          name: string
+          region: string
+          school_type: string
+          subscription_renewal_date: string | null
+          subscription_status: string
+          subscription_tier: string
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          contact_email: string
+          contact_phone: string
+          created_at?: string
+          district: string
+          ges_registration_no: string
+          id?: string
+          name: string
+          region: string
+          school_type: string
+          subscription_renewal_date?: string | null
+          subscription_status?: string
+          subscription_tier?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          contact_email?: string
+          contact_phone?: string
+          created_at?: string
+          district?: string
+          ges_registration_no?: string
+          id?: string
+          name?: string
+          region?: string
+          school_type?: string
+          subscription_renewal_date?: string | null
+          subscription_status?: string
+          subscription_tier?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_lesson_note: { Args: { p_lesson_plan: string }; Returns: string }
+      generate_lesson_plan: {
+        Args: {
+          p_class_level: string
+          p_custom_content?: string
+          p_duration: string
+          p_strand: string
+          p_subject: string
+          p_substrand: string
+          p_week: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
