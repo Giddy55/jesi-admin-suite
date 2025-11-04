@@ -41,14 +41,14 @@
     --accent-light: 45 85% 95%;
     
     /* Status colors */
-    --success: 140 65% 45%;
-    --success-foreground: 0 0% 98%;
-    --warning: 45 95% 50%;
-    --warning-foreground: 220 20% 10%;
-    --destructive: 0 85% 55%;
-    --destructive-foreground: 0 0% 98%;
-    --info: 220 85% 55%;
-    --info-foreground: 0 0% 98%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 28 100% 50%;
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --info: 221 83% 53%;
+    --info-foreground: 0 0% 100%;
     
     /* Form elements */
     --border: 210 20% 85%;
