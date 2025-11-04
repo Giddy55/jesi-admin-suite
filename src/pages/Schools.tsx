@@ -328,25 +328,31 @@ export default function Schools() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuLabel>School Actions</DropdownMenuLabel>
                           <DropdownMenuItem onClick={() => {
                             setSelectedSchool(school);
                             setDetailsDialogOpen(true);
                           }}>
-                            View Details
+                            View School Details
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => toast({
                             title: 'Coming Soon',
-                            description: 'User management feature is under development',
+                            description: 'Manage teachers, students, and staff for this school',
                           })}>
-                            Manage Users
+                            Manage School Users
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => navigate('/analytics')}>
-                            View Analytics
+                          <DropdownMenuItem onClick={() => toast({
+                            title: 'Coming Soon',
+                            description: 'View student performance, attendance, and school statistics',
+                          })}>
+                            School Analytics
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => navigate('/billing')}>
-                            Billing Settings
+                          <DropdownMenuItem onClick={() => toast({
+                            title: 'Coming Soon',
+                            description: 'Manage subscription plan and billing for this school',
+                          })}>
+                            School Subscription
                           </DropdownMenuItem>
                           <DropdownMenuItem 
                             className="text-destructive"
