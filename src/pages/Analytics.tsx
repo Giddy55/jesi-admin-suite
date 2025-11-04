@@ -647,15 +647,15 @@ export default function Analytics() {
                       <div className="text-3xl font-bold text-primary">{teacherUsageData.weeklyActive}%</div>
                     </div>
                     <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">Lesson Plans/Week</div>
+                      <div className="text-sm text-muted-foreground mb-2">Lesson Plan Generated per Week</div>
                       <div className="text-3xl font-bold">{teacherUsageData.lessonPlansPerWeek}</div>
                     </div>
                     <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">Assessments/Week</div>
+                      <div className="text-sm text-muted-foreground mb-2">Assessment Generated per Week</div>
                       <div className="text-3xl font-bold">{teacherUsageData.assessmentsPerWeek}</div>
                     </div>
                     <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">AI Recommendations/Week</div>
+                      <div className="text-sm text-muted-foreground mb-2">AI Advice Accessed</div>
                       <div className="text-3xl font-bold">{teacherUsageData.aiRecommendationsPerWeek}</div>
                     </div>
                   </div>
@@ -678,7 +678,7 @@ export default function Analytics() {
                       <ResponsiveContainer width="100%" height={200}>
                         <BarChart data={[
                           { phase: 'Before Jesi', minutes: teacherEfficiencyData.planningTimeBefore },
-                          { phase: 'After Jesi', minutes: teacherEfficiencyData.planningTimeAfter }
+                          { phase: 'Using Jesi', minutes: teacherEfficiencyData.planningTimeAfter }
                         ]} layout="vertical">
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis type="number" />
