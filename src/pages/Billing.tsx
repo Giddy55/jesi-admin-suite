@@ -94,12 +94,12 @@ const mockPricingPlans = [
 
 const mockFinancialData = {
   monthlyRevenue: [
-    { month: "Jan", revenue: 25000, subscriptions: 45 },
-    { month: "Feb", revenue: 28000, subscriptions: 48 },
-    { month: "Mar", revenue: 32000, subscriptions: 52 },
-    { month: "Apr", revenue: 35000, subscriptions: 55 },
-    { month: "May", revenue: 38000, subscriptions: 58 },
-    { month: "Jun", revenue: 42000, subscriptions: 62 }
+    { month: "Jan", revenue: 25000, subscriptions: 45, school: "Accra Senior High School" },
+    { month: "Feb", revenue: 28000, subscriptions: 48, school: "Kumasi Technical Institute" },
+    { month: "Mar", revenue: 32000, subscriptions: 52, school: "Cape Coast University" },
+    { month: "Apr", revenue: 35000, subscriptions: 55, school: "Accra Senior High School" },
+    { month: "May", revenue: 38000, subscriptions: 58, school: "Kumasi Technical Institute" },
+    { month: "Jun", revenue: 42000, subscriptions: 62, school: "Accra Senior High School" }
   ],
   totalRevenue: 200000,
   activeSubscriptions: 62,
@@ -126,6 +126,7 @@ export default function Billing() {
   const [newPlanOpen, setNewPlanOpen] = useState(false);
   const [newPaymentMethodOpen, setNewPaymentMethodOpen] = useState(false);
   const [revenueFilter, setRevenueFilter] = useState<string>('all');
+  const [revenueSchoolFilter, setRevenueSchoolFilter] = useState<string>('all');
   
   const [newSubscription, setNewSubscription] = useState({
     schoolName: '',
@@ -155,11 +156,12 @@ export default function Billing() {
     return matchesPlan && matchesStatus && matchesSchool;
   });
 
-  const filteredRevenue = revenueFilter === 'all' 
-    ? mockFinancialData.monthlyRevenue 
-    : mockFinancialData.monthlyRevenue.filter(data => 
-        revenueFilter === 'high' ? data.revenue > 35000 : data.revenue <= 35000
-      );
+  const filteredRevenue = mockFinancialData.monthlyRevenue.filter(data => {
+    const matchesRevenueFilter = revenueFilter === 'all' || 
+      (revenueFilter === 'high' ? data.revenue > 35000 : data.revenue <= 35000);
+    const matchesSchoolFilter = revenueSchoolFilter === 'all' || data.school === revenueSchoolFilter;
+    return matchesRevenueFilter && matchesSchoolFilter;
+  });
 
   const handleCreateSubscription = () => {
     if (newSubscription.sendEmail && newSubscription.schoolEmail) {
@@ -887,16 +889,31 @@ export default function Billing() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Monthly Revenue Trend</CardTitle>
-              <Select value={revenueFilter} onValueChange={setRevenueFilter}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Filter revenue" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Revenue</SelectItem>
-                  <SelectItem value="high">High (&gt;35k)</SelectItem>
-                  <SelectItem value="low">Low (≤35k)</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="flex gap-2">
+                <Select value={revenueSchoolFilter} onValueChange={setRevenueSchoolFilter}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Filter by school" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Schools</SelectItem>
+                    {mockSubscriptions.map((sub) => (
+                      <SelectItem key={sub.id} value={sub.schoolName}>
+                        {sub.schoolName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={revenueFilter} onValueChange={setRevenueFilter}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter revenue" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Revenue</SelectItem>
+                    <SelectItem value="high">High (&gt;35k)</SelectItem>
+                    <SelectItem value="low">Low (≤35k)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
