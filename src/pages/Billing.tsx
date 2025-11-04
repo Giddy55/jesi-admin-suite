@@ -124,6 +124,7 @@ export default function Billing() {
   const [selectedSchool, setSelectedSchool] = useState<string>('all');
   const [newSubscriptionOpen, setNewSubscriptionOpen] = useState(false);
   const [newPlanOpen, setNewPlanOpen] = useState(false);
+  const [newPaymentMethodOpen, setNewPaymentMethodOpen] = useState(false);
   const [revenueFilter, setRevenueFilter] = useState<string>('all');
   
   const [newSubscription, setNewSubscription] = useState({
@@ -139,6 +140,12 @@ export default function Billing() {
     currency: 'GHS',
     interval: 'monthly',
     features: ['']
+  });
+
+  const [newPaymentMethod, setNewPaymentMethod] = useState({
+    name: '',
+    fees: '',
+    status: 'active'
   });
 
   const filteredSubscriptions = mockSubscriptions.filter(sub => {
@@ -176,6 +183,15 @@ export default function Billing() {
     });
     setNewPlanOpen(false);
     setNewPlan({ name: '', price: '', currency: 'GHS', interval: 'monthly', features: [''] });
+  };
+
+  const handleAddPaymentMethod = () => {
+    toast({
+      title: "Payment Method Added",
+      description: `${newPaymentMethod.name} has been added successfully`,
+    });
+    setNewPaymentMethodOpen(false);
+    setNewPaymentMethod({ name: '', fees: '', status: 'active' });
   };
 
   const getStatusBadge = (status: string) => {
@@ -574,8 +590,60 @@ export default function Billing() {
         <TabsContent value="payments" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Payment Service Providers</CardTitle>
-              <CardDescription>Manage third-party payment integrations</CardDescription>
+              <div className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Payment Service Providers</CardTitle>
+                  <CardDescription>Manage third-party payment integrations</CardDescription>
+                </div>
+                <Dialog open={newPaymentMethodOpen} onOpenChange={setNewPaymentMethodOpen}>
+                  <DialogTrigger asChild>
+                    <Button>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Payment Method
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add Payment Method</DialogTitle>
+                      <DialogDescription>Add a new payment service provider</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <Label>Provider Name</Label>
+                        <Input 
+                          placeholder="e.g., MTN Mobile Money" 
+                          value={newPaymentMethod.name}
+                          onChange={(e) => setNewPaymentMethod({...newPaymentMethod, name: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label>Transaction Fees</Label>
+                        <Input 
+                          placeholder="e.g., 2.5%" 
+                          value={newPaymentMethod.fees}
+                          onChange={(e) => setNewPaymentMethod({...newPaymentMethod, fees: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label>Status</Label>
+                        <Select value={newPaymentMethod.status} onValueChange={(value) => setNewPaymentMethod({...newPaymentMethod, status: value})}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="inactive">Inactive</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setNewPaymentMethodOpen(false)}>Cancel</Button>
+                      <Button onClick={handleAddPaymentMethod}>Add Payment Method</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </CardHeader>
             <CardContent>
               <Table>
