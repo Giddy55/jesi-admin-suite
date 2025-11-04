@@ -7,13 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { DateRange } from "react-day-picker";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Download, Edit, Eye, Filter, Plus, Send } from "lucide-react";
+import { CalendarIcon, Download, Edit, Eye, Filter, Plus, Send, Mail } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock data
 const mockSubscriptions = [
@@ -114,16 +116,67 @@ const mockPaymentProviders = [
 ];
 
 export default function Billing() {
+  const { toast } = useToast();
   const [selectedDateRange, setSelectedDateRange] = useState<DateRange | undefined>();
   const [editingPlan, setEditingPlan] = useState<any>(null);
   const [selectedPlan, setSelectedPlan] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [selectedSchool, setSelectedSchool] = useState<string>('all');
+  const [newSubscriptionOpen, setNewSubscriptionOpen] = useState(false);
+  const [newPlanOpen, setNewPlanOpen] = useState(false);
+  const [revenueFilter, setRevenueFilter] = useState<string>('all');
+  
+  const [newSubscription, setNewSubscription] = useState({
+    schoolName: '',
+    schoolEmail: '',
+    plan: '',
+    sendEmail: false
+  });
+
+  const [newPlan, setNewPlan] = useState({
+    name: '',
+    price: '',
+    currency: 'GHS',
+    interval: 'monthly',
+    features: ['']
+  });
 
   const filteredSubscriptions = mockSubscriptions.filter(sub => {
     const matchesPlan = selectedPlan === 'all' || sub.plan.toLowerCase() === selectedPlan.toLowerCase();
     const matchesStatus = selectedStatus === 'all' || sub.status === selectedStatus;
-    return matchesPlan && matchesStatus;
+    const matchesSchool = selectedSchool === 'all' || sub.schoolName.toLowerCase().includes(selectedSchool.toLowerCase());
+    return matchesPlan && matchesStatus && matchesSchool;
   });
+
+  const filteredRevenue = revenueFilter === 'all' 
+    ? mockFinancialData.monthlyRevenue 
+    : mockFinancialData.monthlyRevenue.filter(data => 
+        revenueFilter === 'high' ? data.revenue > 35000 : data.revenue <= 35000
+      );
+
+  const handleCreateSubscription = () => {
+    if (newSubscription.sendEmail && newSubscription.schoolEmail) {
+      toast({
+        title: "Email Sent",
+        description: `Payment link sent to ${newSubscription.schoolEmail}`,
+      });
+    }
+    toast({
+      title: "Subscription Created",
+      description: `Subscription for ${newSubscription.schoolName} has been created`,
+    });
+    setNewSubscriptionOpen(false);
+    setNewSubscription({ schoolName: '', schoolEmail: '', plan: '', sendEmail: false });
+  };
+
+  const handleCreatePlan = () => {
+    toast({
+      title: "Plan Created",
+      description: `${newPlan.name} plan has been created successfully`,
+    });
+    setNewPlanOpen(false);
+    setNewPlan({ name: '', price: '', currency: 'GHS', interval: 'monthly', features: [''] });
+  };
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
@@ -147,7 +200,7 @@ export default function Billing() {
             <Download className="h-4 w-4 mr-2" />
             Export Reports
           </Button>
-          <Dialog>
+          <Dialog open={newSubscriptionOpen} onOpenChange={setNewSubscriptionOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="h-4 w-4 mr-2" />
@@ -162,11 +215,24 @@ export default function Billing() {
               <div className="space-y-4">
                 <div>
                   <Label>School Name</Label>
-                  <Input placeholder="Enter school name" />
+                  <Input 
+                    placeholder="Enter school name" 
+                    value={newSubscription.schoolName}
+                    onChange={(e) => setNewSubscription({...newSubscription, schoolName: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label>School Email</Label>
+                  <Input 
+                    type="email"
+                    placeholder="school@example.com" 
+                    value={newSubscription.schoolEmail}
+                    onChange={(e) => setNewSubscription({...newSubscription, schoolEmail: e.target.value})}
+                  />
                 </div>
                 <div>
                   <Label>Subscription Plan</Label>
-                  <Select>
+                  <Select value={newSubscription.plan} onValueChange={(value) => setNewSubscription({...newSubscription, plan: value})}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select plan" />
                     </SelectTrigger>
@@ -179,8 +245,24 @@ export default function Billing() {
                     </SelectContent>
                   </Select>
                 </div>
-                <Button className="w-full">Create Subscription</Button>
+                <div className="flex items-center space-x-2 p-4 border rounded-lg bg-muted/50">
+                  <input
+                    type="checkbox"
+                    id="sendEmail"
+                    checked={newSubscription.sendEmail}
+                    onChange={(e) => setNewSubscription({...newSubscription, sendEmail: e.target.checked})}
+                    className="h-4 w-4"
+                  />
+                  <Label htmlFor="sendEmail" className="cursor-pointer flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    Send payment link to school email
+                  </Label>
+                </div>
               </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setNewSubscriptionOpen(false)}>Cancel</Button>
+                <Button onClick={handleCreateSubscription}>Create Subscription</Button>
+              </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
@@ -244,6 +326,12 @@ export default function Billing() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Filter className="h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search school..."
+                    value={selectedSchool === 'all' ? '' : selectedSchool}
+                    onChange={(e) => setSelectedSchool(e.target.value || 'all')}
+                    className="w-[180px] bg-muted/50 border-0"
+                  />
                   <Select value={selectedPlan} onValueChange={setSelectedPlan}>
                     <SelectTrigger className="w-[140px] bg-muted/50 border-0">
                       <SelectValue placeholder="All Plans" />
@@ -314,9 +402,100 @@ export default function Billing() {
 
         <TabsContent value="pricing" className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle>Subscription Pricing Plans</CardTitle>
-              <CardDescription>Configure pricing for different subscription tiers</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Subscription Pricing Plans</CardTitle>
+                <CardDescription>Configure pricing for different subscription tiers</CardDescription>
+              </div>
+              <Dialog open={newPlanOpen} onOpenChange={setNewPlanOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create New Plan
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>Create New Pricing Plan</DialogTitle>
+                    <DialogDescription>Add a new subscription plan for schools</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <Label>Plan Name</Label>
+                        <Input 
+                          placeholder="e.g., Pro" 
+                          value={newPlan.name}
+                          onChange={(e) => setNewPlan({...newPlan, name: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label>Price</Label>
+                        <Input 
+                          type="number" 
+                          placeholder="0" 
+                          value={newPlan.price}
+                          onChange={(e) => setNewPlan({...newPlan, price: e.target.value})}
+                        />
+                      </div>
+                      <div>
+                        <Label>Currency</Label>
+                        <Select value={newPlan.currency} onValueChange={(value) => setNewPlan({...newPlan, currency: value})}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="GHS">Ghana Cedis (GHS)</SelectItem>
+                            <SelectItem value="USD">US Dollars (USD)</SelectItem>
+                            <SelectItem value="EUR">Euros (EUR)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label>Billing Interval</Label>
+                        <Select value={newPlan.interval} onValueChange={(value) => setNewPlan({...newPlan, interval: value})}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="monthly">Monthly</SelectItem>
+                            <SelectItem value="yearly">Yearly</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <div>
+                      <Label>Features</Label>
+                      {newPlan.features.map((feature, index) => (
+                        <div key={index} className="flex gap-2 mt-2">
+                          <Input
+                            placeholder="Enter feature"
+                            value={feature}
+                            onChange={(e) => {
+                              const features = [...newPlan.features];
+                              features[index] = e.target.value;
+                              setNewPlan({...newPlan, features});
+                            }}
+                          />
+                          {index === newPlan.features.length - 1 && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => setNewPlan({...newPlan, features: [...newPlan.features, '']})}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setNewPlanOpen(false)}>Cancel</Button>
+                    <Button onClick={handleCreatePlan}>Create Plan</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </CardHeader>
             <CardContent>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -638,21 +817,43 @@ export default function Billing() {
           </Card>
 
           <Card>
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Monthly Revenue Trend</CardTitle>
+              <Select value={revenueFilter} onValueChange={setRevenueFilter}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter revenue" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Revenue</SelectItem>
+                  <SelectItem value="high">High (&gt;35k)</SelectItem>
+                  <SelectItem value="low">Low (≤35k)</SelectItem>
+                </SelectContent>
+              </Select>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                {mockFinancialData.monthlyRevenue.map((data, index) => (
-                  <div key={index} className="flex justify-between items-center p-2 border rounded">
-                    <span className="font-medium">{data.month} 2024</span>
-                    <div className="text-right">
-                      <div className="font-bold">GHS {data.revenue.toLocaleString()}</div>
-                      <div className="text-sm text-muted-foreground">{data.subscriptions} subscriptions</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={filteredRevenue}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line 
+                    type="monotone" 
+                    dataKey="revenue" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={2}
+                    name="Revenue (GHS)"
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="subscriptions" 
+                    stroke="hsl(var(--secondary))" 
+                    strokeWidth={2}
+                    name="Subscriptions"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
