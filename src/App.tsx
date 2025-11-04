@@ -10,7 +10,7 @@ import Schools from "@/pages/Schools";
 import Compliance from "@/pages/Compliance";
 import Analytics from "@/pages/Analytics";
 import Billing from "@/pages/Billing";
-import Support from "@/pages/Support";
+import Communications from "@/pages/Communications";
 import Settings from "@/pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -71,7 +71,7 @@ const App = () => (
             path="/support" 
             element={
               <ProtectedRoute>
-                <Support />
+                <Communications />
               </ProtectedRoute>
             } 
           />

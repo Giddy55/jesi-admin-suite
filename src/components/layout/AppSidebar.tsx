@@ -37,7 +37,7 @@ const navigationItems = [
   { title: "Compliance", url: "/compliance", icon: Scale },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Billing", url: "/billing", icon: DollarSign },
-  { title: "Support & Comms", url: "/support", icon: MessageSquare },
+  { title: "Communications", url: "/support", icon: MessageSquare },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
