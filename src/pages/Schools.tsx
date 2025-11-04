@@ -20,7 +20,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import AddSchoolDialog from '@/components/schools/AddSchoolDialog';
 import SchoolDetailsDialog from '@/components/schools/SchoolDetailsDialog';
-import { useNavigate } from 'react-router-dom';
+import ManageSchoolUsersDialog from '@/components/schools/ManageSchoolUsersDialog';
+import SchoolAnalyticsDialog from '@/components/schools/SchoolAnalyticsDialog';
+import SchoolSubscriptionDialog from '@/components/schools/SchoolSubscriptionDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,7 +41,6 @@ import {
 
 export default function Schools() {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [schools, setSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,6 +50,9 @@ export default function Schools() {
   const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [usersDialogOpen, setUsersDialogOpen] = useState(false);
+  const [analyticsDialogOpen, setAnalyticsDialogOpen] = useState(false);
+  const [subscriptionDialogOpen, setSubscriptionDialogOpen] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
 
   useEffect(() => {
@@ -335,23 +339,23 @@ export default function Schools() {
                           }}>
                             View School Details
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => toast({
-                            title: 'Coming Soon',
-                            description: 'Manage teachers, students, and staff for this school',
-                          })}>
+                          <DropdownMenuItem onClick={() => {
+                            setSelectedSchool(school);
+                            setUsersDialogOpen(true);
+                          }}>
                             Manage School Users
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => toast({
-                            title: 'Coming Soon',
-                            description: 'View student performance, attendance, and school statistics',
-                          })}>
+                          <DropdownMenuItem onClick={() => {
+                            setSelectedSchool(school);
+                            setAnalyticsDialogOpen(true);
+                          }}>
                             School Analytics
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => toast({
-                            title: 'Coming Soon',
-                            description: 'Manage subscription plan and billing for this school',
-                          })}>
+                          <DropdownMenuItem onClick={() => {
+                            setSelectedSchool(school);
+                            setSubscriptionDialogOpen(true);
+                          }}>
                             School Subscription
                           </DropdownMenuItem>
                           <DropdownMenuItem 
@@ -395,6 +399,25 @@ export default function Schools() {
         school={selectedSchool}
         open={detailsDialogOpen}
         onOpenChange={setDetailsDialogOpen}
+      />
+
+      <ManageSchoolUsersDialog
+        school={selectedSchool}
+        open={usersDialogOpen}
+        onOpenChange={setUsersDialogOpen}
+      />
+
+      <SchoolAnalyticsDialog
+        school={selectedSchool}
+        open={analyticsDialogOpen}
+        onOpenChange={setAnalyticsDialogOpen}
+      />
+
+      <SchoolSubscriptionDialog
+        school={selectedSchool}
+        open={subscriptionDialogOpen}
+        onOpenChange={setSubscriptionDialogOpen}
+        onSuccess={fetchSchools}
       />
     </div>
   );
