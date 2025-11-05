@@ -71,11 +71,19 @@ export default function Analytics() {
       { region: 'Western', schools: 165, teachers: 1134, students: 22140 },
       { region: 'Eastern', schools: 142, teachers: 978, students: 18340 }
     ],
-    byAge: [
-      { range: '5-10', count: 45230 },
-      { range: '11-15', count: 62340 },
-      { range: '16-18', count: 28450 }
-    ],
+    byAge: {
+      students: [
+        { range: '5-10', count: 45230 },
+        { range: '11-15', count: 62340 },
+        { range: '16-18', count: 28450 }
+      ],
+      teachers: [
+        { range: '20-30', count: 2845 },
+        { range: '31-40', count: 3456 },
+        { range: '41-50', count: 2134 },
+        { range: '51-60', count: 1165 }
+      ]
+    },
     byGender: [
       { gender: 'Male', count: 68900 },
       { gender: 'Female', count: 67889 }
@@ -499,17 +507,52 @@ export default function Analytics() {
                 </TabsContent>
 
                 <TabsContent value="age">
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie data={demographicsData.byAge} dataKey="count" nameKey="range" cx="50%" cy="50%" outerRadius={100} label>
-                        {demographicsData.byAge.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <div className="space-y-6">
+                    {/* Students Age Distribution */}
+                    <div>
+                      <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        Students Age Distribution
+                      </h4>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <PieChart>
+                          <Pie 
+                            data={demographicsData.byAge.students} 
+                            dataKey="count" 
+                            nameKey="range" 
+                            cx="50%" 
+                            cy="50%" 
+                            outerRadius={80} 
+                            label
+                          >
+                            {demographicsData.byAge.students.map((entry, index) => (
+                              <Cell key={`cell-students-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    {/* Teachers Age Distribution */}
+                    <div>
+                      <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                        <GraduationCap className="h-4 w-4" />
+                        Teachers Age Distribution
+                      </h4>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <BarChart data={demographicsData.byAge.teachers}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="range" />
+                          <YAxis />
+                          <Tooltip />
+                          <Legend />
+                          <Bar dataKey="count" fill="#10B981" name="Teachers" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="gender">
