@@ -106,7 +106,7 @@ export default function Analytics() {
   ];
 
   const retentionData = {
-    dau_mau: { students: 22, teachers: 68, admins: 85 },
+    wau: { students: 65, teachers: 82, admins: 90 },
     churnRate: { students: 5.2, teachers: 2.8, schools: 1.5 },
     retention7day: { students: 78, teachers: 92, admins: 95 },
     retention30day: { students: 65, teachers: 85, admins: 90 },
@@ -630,21 +630,21 @@ export default function Analytics() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card>
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-sm">DAU/MAU Ratio</CardTitle>
+                    <CardTitle className="text-sm">Weekly Active Users</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-sm">Students</span>
-                        <span className="font-bold">{retentionData.dau_mau.students}%</span>
+                        <span className="font-bold">{retentionData.wau.students}%</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm">Teachers</span>
-                        <span className="font-bold">{retentionData.dau_mau.teachers}%</span>
+                        <span className="font-bold">{retentionData.wau.teachers}%</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-sm">Admins</span>
-                        <span className="font-bold">{retentionData.dau_mau.admins}%</span>
+                        <span className="font-bold">{retentionData.wau.admins}%</span>
                       </div>
                     </div>
                   </CardContent>
