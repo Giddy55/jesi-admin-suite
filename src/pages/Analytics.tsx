@@ -139,8 +139,8 @@ export default function Analytics() {
   const teacherEfficiencyData = {
     planningTimeBefore: 120,
     planningTimeAfter: 35,
-    lessonsPerHour: 1.7,
-    assessmentsPerHour: 2.1,
+    lessonsPerHour: 2,
+    assessmentsPerHour: 2,
     hoursSavedPerMonth: 28
   };
 
@@ -690,15 +690,15 @@ export default function Analytics() {
                     </div>
                     <div className="space-y-4">
                       <div className="p-4 border rounded-lg">
-                        <div className="text-sm text-muted-foreground">Lessons Per Hour</div>
+                        <div className="text-sm text-muted-foreground">Lesson Plan Generated per Hour</div>
                         <div className="text-2xl font-bold">{teacherEfficiencyData.lessonsPerHour}</div>
                       </div>
                       <div className="p-4 border rounded-lg">
-                        <div className="text-sm text-muted-foreground">Assessments Per Hour</div>
+                        <div className="text-sm text-muted-foreground">Assessments Generated per Hour</div>
                         <div className="text-2xl font-bold">{teacherEfficiencyData.assessmentsPerHour}</div>
                       </div>
                       <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950">
-                        <div className="text-sm text-muted-foreground">Hours Saved/Month</div>
+                        <div className="text-sm text-muted-foreground">Average Hours Saved per Week</div>
                         <div className="text-2xl font-bold text-green-600">{teacherEfficiencyData.hoursSavedPerMonth}</div>
                       </div>
                     </div>
