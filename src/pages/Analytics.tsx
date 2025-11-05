@@ -165,6 +165,133 @@ export default function Analytics() {
     ]
   };
 
+  // Detailed subject data with level breakdown
+  const subjectDetailedData: Record<string, {
+    name: string;
+    overall: { improvement: number; studentsImproving: number; avgScore: number };
+    primary: { improvement: number; studentsImproving: number; avgScore: number; totalStudents: number };
+    jhs: { improvement: number; studentsImproving: number; avgScore: number; totalStudents: number };
+    shs: { improvement: number; studentsImproving: number; avgScore: number; totalStudents: number };
+    topicBreakdown: { topic: string; mastery: number }[];
+    weakAreas: string[];
+    strongAreas: string[];
+  }> = {
+    mathematics: {
+      name: 'Mathematics',
+      overall: { improvement: 15, studentsImproving: 72, avgScore: 78 },
+      primary: { improvement: 18, studentsImproving: 75, avgScore: 82, totalStudents: 1250 },
+      jhs: { improvement: 14, studentsImproving: 70, avgScore: 76, totalStudents: 980 },
+      shs: { improvement: 12, studentsImproving: 68, avgScore: 74, totalStudents: 650 },
+      topicBreakdown: [
+        { topic: 'Algebra', mastery: 85 },
+        { topic: 'Geometry', mastery: 78 },
+        { topic: 'Statistics', mastery: 82 },
+        { topic: 'Trigonometry', mastery: 65 }
+      ],
+      weakAreas: ['Trigonometry', 'Word Problems'],
+      strongAreas: ['Algebra', 'Statistics']
+    },
+    english: {
+      name: 'English',
+      overall: { improvement: 12, studentsImproving: 68, avgScore: 82 },
+      primary: { improvement: 14, studentsImproving: 70, avgScore: 85, totalStudents: 1300 },
+      jhs: { improvement: 11, studentsImproving: 67, avgScore: 80, totalStudents: 1020 },
+      shs: { improvement: 10, studentsImproving: 65, avgScore: 78, totalStudents: 700 },
+      topicBreakdown: [
+        { topic: 'Grammar', mastery: 88 },
+        { topic: 'Reading Comprehension', mastery: 85 },
+        { topic: 'Writing', mastery: 75 },
+        { topic: 'Vocabulary', mastery: 80 }
+      ],
+      weakAreas: ['Essay Writing', 'Creative Writing'],
+      strongAreas: ['Grammar', 'Reading Comprehension']
+    },
+    science: {
+      name: 'Science',
+      overall: { improvement: 14, studentsImproving: 70, avgScore: 76 },
+      primary: { improvement: 16, studentsImproving: 73, avgScore: 80, totalStudents: 1200 },
+      jhs: { improvement: 13, studentsImproving: 69, avgScore: 74, totalStudents: 950 },
+      shs: { improvement: 12, studentsImproving: 67, avgScore: 72, totalStudents: 680 },
+      topicBreakdown: [
+        { topic: 'Biology', mastery: 82 },
+        { topic: 'Chemistry', mastery: 70 },
+        { topic: 'Physics', mastery: 75 },
+        { topic: 'Environmental Science', mastery: 85 }
+      ],
+      weakAreas: ['Chemistry', 'Physics Calculations'],
+      strongAreas: ['Biology', 'Environmental Science']
+    },
+    'social-studies': {
+      name: 'Social Studies',
+      overall: { improvement: 11, studentsImproving: 65, avgScore: 80 },
+      primary: { improvement: 13, studentsImproving: 68, avgScore: 83, totalStudents: 1150 },
+      jhs: { improvement: 10, studentsImproving: 64, avgScore: 78, totalStudents: 900 },
+      shs: { improvement: 9, studentsImproving: 62, avgScore: 76, totalStudents: 620 },
+      topicBreakdown: [
+        { topic: 'Ghana History', mastery: 88 },
+        { topic: 'Geography', mastery: 75 },
+        { topic: 'Civics', mastery: 78 },
+        { topic: 'Economics', mastery: 72 }
+      ],
+      weakAreas: ['Economics', 'Map Reading'],
+      strongAreas: ['Ghana History', 'Civics']
+    },
+    rme: {
+      name: 'RME',
+      overall: { improvement: 16, studentsImproving: 75, avgScore: 85 },
+      primary: { improvement: 18, studentsImproving: 78, avgScore: 88, totalStudents: 1280 },
+      jhs: { improvement: 15, studentsImproving: 74, avgScore: 84, totalStudents: 990 },
+      shs: { improvement: 14, studentsImproving: 72, avgScore: 82, totalStudents: 710 },
+      topicBreakdown: [
+        { topic: 'Religious Studies', mastery: 90 },
+        { topic: 'Moral Education', mastery: 85 },
+        { topic: 'Cultural Studies', mastery: 82 },
+        { topic: 'Ethics', mastery: 88 }
+      ],
+      weakAreas: ['Comparative Religion'],
+      strongAreas: ['Religious Studies', 'Ethics']
+    }
+  };
+
+  // Get filtered data based on selections
+  const getFilteredLearningGainsData = () => {
+    const selectedSubject = learningGainsSubjectFilter;
+    const selectedLevel = learningGainsSchoolLevelFilter;
+
+    if (selectedSubject === 'all' && selectedLevel === 'all') {
+      // Show overall summary
+      return {
+        type: 'overall' as const,
+        data: learningGainsData
+      };
+    } else if (selectedSubject !== 'all' && selectedLevel === 'all') {
+      // Show subject details across all levels
+      return {
+        type: 'subject' as const,
+        data: subjectDetailedData[selectedSubject]
+      };
+    } else if (selectedSubject === 'all' && selectedLevel !== 'all') {
+      // Show all subjects for specific level
+      return {
+        type: 'level' as const,
+        level: selectedLevel,
+        subjects: Object.values(subjectDetailedData).map(subject => ({
+          name: subject.name,
+          improvement: subject[selectedLevel as 'primary' | 'jhs' | 'shs'].improvement,
+          avgScore: subject[selectedLevel as 'primary' | 'jhs' | 'shs'].avgScore,
+          studentsImproving: subject[selectedLevel as 'primary' | 'jhs' | 'shs'].studentsImproving
+        }))
+      };
+    } else {
+      // Show specific subject and level
+      return {
+        type: 'specific' as const,
+        data: subjectDetailedData[selectedSubject],
+        level: selectedLevel as 'primary' | 'jhs' | 'shs'
+      };
+    }
+  };
+
   const curriculumData = {
     alignmentRate: 94,
     coverageBySubject: [
@@ -739,7 +866,7 @@ export default function Analytics() {
                     <TrendingUp className="h-5 w-5" />
                     Learning Gains
                   </CardTitle>
-                  <CardDescription>Academic improvement since using Jesi AI</CardDescription>
+                  <CardDescription>Student performance improvements over time - Use filters for detailed insights</CardDescription>
                   <div className="flex gap-4 mt-4">
                     <Select value={learningGainsSubjectFilter} onValueChange={setLearningGainsSubjectFilter}>
                       <SelectTrigger className="w-[200px]">
@@ -768,32 +895,280 @@ export default function Analytics() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="text-sm font-medium mb-4">Learning Progress per Subject (out of 100)</h4>
-                      <ResponsiveContainer width="100%" height={250}>
-                        <BarChart data={learningGainsData.subjectProgress} layout="vertical">
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis type="number" domain={[0, 100]} />
-                          <YAxis dataKey="subject" type="category" width={120} />
-                          <Tooltip />
-                          <Bar dataKey="progress" fill="#3B82F6" name="Progress" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="p-6 border rounded-lg bg-blue-50 dark:bg-blue-950">
-                        <div className="text-sm text-muted-foreground mb-2">Average Score Improvement</div>
-                        <div className="text-4xl font-bold text-blue-600">+{learningGainsData.avgImprovement}%</div>
-                        <p className="text-sm text-muted-foreground mt-2">Baseline vs. recent test</p>
-                      </div>
-                      <div className="p-6 border rounded-lg">
-                        <div className="text-sm text-muted-foreground mb-2">Students Improving ≥10%</div>
-                        <div className="text-4xl font-bold">{learningGainsData.studentsImproving10Plus}%</div>
-                        <p className="text-sm text-muted-foreground mt-2">Shows measurable impact</p>
-                      </div>
-                    </div>
-                  </div>
+                  {(() => {
+                    const filteredData = getFilteredLearningGainsData();
+
+                    if (filteredData.type === 'overall') {
+                      // Show overall summary
+                      return (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                          <div>
+                            <h4 className="text-sm font-medium mb-4">Learning Progress per Subject (out of 100)</h4>
+                            <ResponsiveContainer width="100%" height={250}>
+                              <BarChart data={filteredData.data.subjectProgress} layout="vertical">
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis type="number" domain={[0, 100]} />
+                                <YAxis dataKey="subject" type="category" width={120} />
+                                <Tooltip />
+                                <Bar dataKey="progress" fill="#3B82F6" name="Progress" />
+                              </BarChart>
+                            </ResponsiveContainer>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="p-6 border rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
+                              <div className="text-sm text-muted-foreground mb-2">Average Score Improvement</div>
+                              <div className="text-4xl font-bold text-blue-600">+{filteredData.data.avgImprovement}%</div>
+                              <p className="text-sm text-muted-foreground mt-2">Baseline vs. recent test</p>
+                            </div>
+                            <div className="p-6 border rounded-lg">
+                              <div className="text-sm text-muted-foreground mb-2">Students Improving ≥10%</div>
+                              <div className="text-4xl font-bold">{filteredData.data.studentsImproving10Plus}%</div>
+                              <p className="text-sm text-muted-foreground mt-2">Shows measurable impact</p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    } else if (filteredData.type === 'subject') {
+                      // Show detailed subject view
+                      const subject = filteredData.data;
+                      return (
+                        <div className="space-y-6">
+                          {/* Key Metrics */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div className="p-6 border rounded-lg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
+                              <div className="flex items-center gap-2 mb-2">
+                                <TrendingUp className="h-4 w-4 text-green-600" />
+                                <div className="text-sm text-muted-foreground">Overall Improvement</div>
+                              </div>
+                              <div className="text-3xl font-bold text-green-600">+{subject.overall.improvement}%</div>
+                            </div>
+                            <div className="p-6 border rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Users className="h-4 w-4 text-blue-600" />
+                                <div className="text-sm text-muted-foreground">Students Improving</div>
+                              </div>
+                              <div className="text-3xl font-bold text-blue-600">{subject.overall.studentsImproving}%</div>
+                            </div>
+                            <div className="p-6 border rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Award className="h-4 w-4 text-purple-600" />
+                                <div className="text-sm text-muted-foreground">Average Score</div>
+                              </div>
+                              <div className="text-3xl font-bold text-purple-600">{subject.overall.avgScore}%</div>
+                            </div>
+                          </div>
+
+                          {/* Level Breakdown */}
+                          <div>
+                            <h4 className="text-sm font-medium mb-4">Performance by School Level</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              {(['primary', 'jhs', 'shs'] as const).map(level => {
+                                const levelData = subject[level];
+                                return (
+                                  <div key={level} className="p-4 border rounded-lg">
+                                    <div className="text-sm font-medium mb-3 capitalize">{level === 'jhs' ? 'JHS' : level === 'shs' ? 'SHS' : 'Primary'}</div>
+                                    <div className="space-y-2 text-sm">
+                                      <div className="flex justify-between">
+                                        <span className="text-muted-foreground">Improvement</span>
+                                        <span className="font-semibold text-green-600">+{levelData.improvement}%</span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-muted-foreground">Avg Score</span>
+                                        <span className="font-semibold">{levelData.avgScore}%</span>
+                                      </div>
+                                      <div className="flex justify-between">
+                                        <span className="text-muted-foreground">Students</span>
+                                        <span className="font-semibold">{levelData.totalStudents.toLocaleString()}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Topic Mastery */}
+                          <div>
+                            <h4 className="text-sm font-medium mb-4">Topic Mastery Breakdown</h4>
+                            <div className="space-y-3">
+                              {subject.topicBreakdown.map((topic, idx) => (
+                                <div key={idx}>
+                                  <div className="flex justify-between text-sm mb-1">
+                                    <span className="font-medium">{topic.topic}</span>
+                                    <span className="text-muted-foreground">{topic.mastery}%</span>
+                                  </div>
+                                  <Progress value={topic.mastery} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Strong & Weak Areas */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950">
+                              <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                                <CheckCircle className="h-4 w-4 text-green-600" />
+                                Strong Areas
+                              </h4>
+                              <ul className="space-y-1">
+                                {subject.strongAreas.map((area, idx) => (
+                                  <li key={idx} className="text-sm text-muted-foreground">• {area}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="p-4 border rounded-lg bg-orange-50 dark:bg-orange-950">
+                              <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                                <TrendingDown className="h-4 w-4 text-orange-600" />
+                                Areas for Improvement
+                              </h4>
+                              <ul className="space-y-1">
+                                {subject.weakAreas.map((area, idx) => (
+                                  <li key={idx} className="text-sm text-muted-foreground">• {area}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    } else if (filteredData.type === 'level') {
+                      // Show all subjects for specific level
+                      return (
+                        <div className="space-y-6">
+                          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 rounded-lg">
+                            <h3 className="text-lg font-semibold capitalize mb-1">
+                              {filteredData.level === 'jhs' ? 'JHS' : filteredData.level === 'shs' ? 'SHS' : 'Primary'} Level Performance
+                            </h3>
+                            <p className="text-sm text-muted-foreground">Subject-wise performance analysis</p>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {filteredData.subjects.map((subject, idx) => (
+                              <div key={idx} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
+                                <div className="font-medium mb-3">{subject.name}</div>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Improvement</span>
+                                    <span className="font-semibold text-green-600">+{subject.improvement}%</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-muted-foreground">Avg Score</span>
+                                    <span className="font-semibold">{subject.avgScore}%</span>
+                                  </div>
+                                  <div className="mt-2">
+                                    <Progress value={subject.avgScore} />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Chart view */}
+                          <div>
+                            <h4 className="text-sm font-medium mb-4">Score Improvement Comparison</h4>
+                            <ResponsiveContainer width="100%" height={300}>
+                              <BarChart data={filteredData.subjects}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                <Legend />
+                                <Bar dataKey="improvement" fill="#10B981" name="Improvement %" />
+                                <Bar dataKey="avgScore" fill="#3B82F6" name="Avg Score %" />
+                              </BarChart>
+                            </ResponsiveContainer>
+                          </div>
+                        </div>
+                      );
+                    } else {
+                      // Show specific subject and level
+                      const subject = filteredData.data;
+                      const levelData = subject[filteredData.level];
+                      return (
+                        <div className="space-y-6">
+                          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 rounded-lg">
+                            <h3 className="text-lg font-semibold mb-1">
+                              {subject.name} - {filteredData.level === 'jhs' ? 'JHS' : filteredData.level === 'shs' ? 'SHS' : 'Primary'}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">Detailed performance metrics</p>
+                          </div>
+
+                          {/* Key Metrics */}
+                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="p-6 border rounded-lg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
+                              <div className="flex items-center gap-2 mb-2">
+                                <TrendingUp className="h-4 w-4 text-green-600" />
+                                <div className="text-sm text-muted-foreground">Improvement</div>
+                              </div>
+                              <div className="text-3xl font-bold text-green-600">+{levelData.improvement}%</div>
+                            </div>
+                            <div className="p-6 border rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Award className="h-4 w-4 text-blue-600" />
+                                <div className="text-sm text-muted-foreground">Average Score</div>
+                              </div>
+                              <div className="text-3xl font-bold text-blue-600">{levelData.avgScore}%</div>
+                            </div>
+                            <div className="p-6 border rounded-lg bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
+                              <div className="flex items-center gap-2 mb-2">
+                                <Users className="h-4 w-4 text-purple-600" />
+                                <div className="text-sm text-muted-foreground">Students Improving</div>
+                              </div>
+                              <div className="text-3xl font-bold text-purple-600">{levelData.studentsImproving}%</div>
+                            </div>
+                            <div className="p-6 border rounded-lg bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900">
+                              <div className="flex items-center gap-2 mb-2">
+                                <School className="h-4 w-4 text-orange-600" />
+                                <div className="text-sm text-muted-foreground">Total Students</div>
+                              </div>
+                              <div className="text-3xl font-bold text-orange-600">{levelData.totalStudents.toLocaleString()}</div>
+                            </div>
+                          </div>
+
+                          {/* Topic Mastery */}
+                          <div>
+                            <h4 className="text-sm font-medium mb-4">Topic Mastery Breakdown</h4>
+                            <div className="space-y-3">
+                              {subject.topicBreakdown.map((topic, idx) => (
+                                <div key={idx}>
+                                  <div className="flex justify-between text-sm mb-1">
+                                    <span className="font-medium">{topic.topic}</span>
+                                    <span className="text-muted-foreground">{topic.mastery}%</span>
+                                  </div>
+                                  <Progress value={topic.mastery} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Strong & Weak Areas */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950">
+                              <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                                <CheckCircle className="h-4 w-4 text-green-600" />
+                                Strong Areas
+                              </h4>
+                              <ul className="space-y-1">
+                                {subject.strongAreas.map((area, idx) => (
+                                  <li key={idx} className="text-sm text-muted-foreground">• {area}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="p-4 border rounded-lg bg-orange-50 dark:bg-orange-950">
+                              <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                                <TrendingDown className="h-4 w-4 text-orange-600" />
+                                Areas for Improvement
+                              </h4>
+                              <ul className="space-y-1">
+                                {subject.weakAreas.map((area, idx) => (
+                                  <li key={idx} className="text-sm text-muted-foreground">• {area}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+                  })()}
                 </CardContent>
               </Card>
 
