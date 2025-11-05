@@ -59,6 +59,8 @@ export default function Analytics() {
   const [districtFilter, setDistrictFilter] = useState('all');
   const [schoolFilter, setSchoolFilter] = useState('all');
   const [academicYearFilter, setAcademicYearFilter] = useState('2024/2025');
+  const [learningGainsSubjectFilter, setLearningGainsSubjectFilter] = useState('all');
+  const [learningGainsSchoolLevelFilter, setLearningGainsSchoolLevelFilter] = useState('all');
 
   // MOCK DATA - Platform Analytics
   const demographicsData = {
@@ -738,6 +740,32 @@ export default function Analytics() {
                     Learning Gains
                   </CardTitle>
                   <CardDescription>Academic improvement since using Jesi AI</CardDescription>
+                  <div className="flex gap-4 mt-4">
+                    <Select value={learningGainsSubjectFilter} onValueChange={setLearningGainsSubjectFilter}>
+                      <SelectTrigger className="w-[200px]">
+                        <SelectValue placeholder="Filter by Subject" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Subjects</SelectItem>
+                        <SelectItem value="mathematics">Mathematics</SelectItem>
+                        <SelectItem value="english">English</SelectItem>
+                        <SelectItem value="science">Science</SelectItem>
+                        <SelectItem value="social-studies">Social Studies</SelectItem>
+                        <SelectItem value="rme">RME</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={learningGainsSchoolLevelFilter} onValueChange={setLearningGainsSchoolLevelFilter}>
+                      <SelectTrigger className="w-[200px]">
+                        <SelectValue placeholder="Filter by School Level" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Levels</SelectItem>
+                        <SelectItem value="primary">Primary</SelectItem>
+                        <SelectItem value="jhs">JHS</SelectItem>
+                        <SelectItem value="shs">SHS</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
