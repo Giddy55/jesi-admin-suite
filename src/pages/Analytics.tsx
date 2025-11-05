@@ -61,6 +61,7 @@ export default function Analytics() {
   const [academicYearFilter, setAcademicYearFilter] = useState('2024/2025');
   const [learningGainsSubjectFilter, setLearningGainsSubjectFilter] = useState('all');
   const [learningGainsSchoolLevelFilter, setLearningGainsSchoolLevelFilter] = useState('all');
+  const [ageUserTypeFilter, setAgeUserTypeFilter] = useState<'students' | 'teachers'>('students');
 
   // MOCK DATA - Platform Analytics
   const demographicsData = {
@@ -507,51 +508,65 @@ export default function Analytics() {
                 </TabsContent>
 
                 <TabsContent value="age">
-                  <div className="space-y-6">
-                    {/* Students Age Distribution */}
-                    <div>
-                      <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        Students Age Distribution
-                      </h4>
-                      <ResponsiveContainer width="100%" height={250}>
-                        <PieChart>
-                          <Pie 
-                            data={demographicsData.byAge.students} 
-                            dataKey="count" 
-                            nameKey="range" 
-                            cx="50%" 
-                            cy="50%" 
-                            outerRadius={80} 
-                            label
-                          >
-                            {demographicsData.byAge.students.map((entry, index) => (
-                              <Cell key={`cell-students-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                          <Legend />
-                        </PieChart>
-                      </ResponsiveContainer>
+                  <div className="space-y-4">
+                    {/* Filter for Students/Teachers */}
+                    <div className="flex items-center gap-2">
+                      <Select value={ageUserTypeFilter} onValueChange={(value: 'students' | 'teachers') => setAgeUserTypeFilter(value)}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="students">Students</SelectItem>
+                          <SelectItem value="teachers">Teachers</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
-                    {/* Teachers Age Distribution */}
-                    <div>
-                      <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
-                        <GraduationCap className="h-4 w-4" />
-                        Teachers Age Distribution
-                      </h4>
-                      <ResponsiveContainer width="100%" height={250}>
-                        <BarChart data={demographicsData.byAge.teachers}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="range" />
-                          <YAxis />
-                          <Tooltip />
-                          <Legend />
-                          <Bar dataKey="count" fill="#10B981" name="Teachers" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
+                    {/* Display based on filter */}
+                    {ageUserTypeFilter === 'students' ? (
+                      <div>
+                        <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          Students Age Distribution
+                        </h4>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <PieChart>
+                            <Pie 
+                              data={demographicsData.byAge.students} 
+                              dataKey="count" 
+                              nameKey="range" 
+                              cx="50%" 
+                              cy="50%" 
+                              outerRadius={100} 
+                              label
+                            >
+                              {demographicsData.byAge.students.map((entry, index) => (
+                                <Cell key={`cell-students-${index}`} fill={COLORS[index % COLORS.length]} />
+                              ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                    ) : (
+                      <div>
+                        <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                          <GraduationCap className="h-4 w-4" />
+                          Teachers Age Distribution
+                        </h4>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <BarChart data={demographicsData.byAge.teachers}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="range" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="count" fill="#10B981" name="Teachers" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
 
