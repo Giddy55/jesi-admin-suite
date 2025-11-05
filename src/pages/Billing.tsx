@@ -125,6 +125,7 @@ export default function Billing() {
   const [newSubscriptionOpen, setNewSubscriptionOpen] = useState(false);
   const [newPlanOpen, setNewPlanOpen] = useState(false);
   const [newPaymentMethodOpen, setNewPaymentMethodOpen] = useState(false);
+  const [emailPreviewOpen, setEmailPreviewOpen] = useState(false);
   const [revenueFilter, setRevenueFilter] = useState<string>('all');
   const [revenueSchoolFilter, setRevenueSchoolFilter] = useState<string>('all');
   
@@ -163,6 +164,10 @@ export default function Billing() {
     return matchesRevenueFilter && matchesSchoolFilter;
   });
 
+  const handlePreviewEmail = () => {
+    setEmailPreviewOpen(true);
+  };
+
   const handleCreateSubscription = () => {
     if (newSubscription.sendEmail && newSubscription.schoolEmail) {
       toast({
@@ -175,7 +180,12 @@ export default function Billing() {
       description: `Subscription for ${newSubscription.schoolName} has been created`,
     });
     setNewSubscriptionOpen(false);
+    setEmailPreviewOpen(false);
     setNewSubscription({ schoolName: '', schoolEmail: '', plan: '', sendEmail: false });
+  };
+
+  const getSelectedPlanDetails = () => {
+    return mockPricingPlans.find(p => p.id === newSubscription.plan);
   };
 
   const handleCreatePlan = () => {
@@ -276,6 +286,16 @@ export default function Billing() {
                     Send payment link to school email
                   </Label>
                 </div>
+                {newSubscription.sendEmail && newSubscription.schoolEmail && newSubscription.plan && (
+                  <Button 
+                    variant="outline" 
+                    onClick={handlePreviewEmail}
+                    className="w-full"
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Preview Email
+                  </Button>
+                )}
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setNewSubscriptionOpen(false)}>Cancel</Button>
@@ -285,6 +305,103 @@ export default function Billing() {
           </Dialog>
         </div>
       </div>
+
+      {/* Email Preview Dialog */}
+      <Dialog open={emailPreviewOpen} onOpenChange={setEmailPreviewOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Email Preview - Subscription Payment</DialogTitle>
+            <DialogDescription>
+              Preview of the email that will be sent to {newSubscription.schoolEmail}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {/* Email Header */}
+            <div className="border-b pb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-muted-foreground">To:</span>
+                <span className="text-sm font-medium">{newSubscription.schoolEmail}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Subject:</span>
+                <span className="text-sm font-medium">Complete Your Subscription Payment</span>
+              </div>
+            </div>
+
+            {/* Email Body Preview */}
+            <div className="bg-muted/30 p-6 rounded-lg space-y-4">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-foreground">Welcome to Our Platform!</h2>
+                <p className="text-muted-foreground mt-2">Complete your subscription payment</p>
+              </div>
+
+              <div className="bg-background p-4 rounded-md border">
+                <p className="text-sm mb-4">Dear {newSubscription.schoolName},</p>
+                <p className="text-sm mb-4">
+                  Thank you for choosing our platform! We're excited to have you on board.
+                </p>
+                <p className="text-sm mb-4">
+                  You've selected the <strong>{getSelectedPlanDetails()?.name}</strong> plan. 
+                  Here's a summary of your subscription:
+                </p>
+
+                <div className="bg-muted/50 p-4 rounded-md space-y-2 mb-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Plan:</span>
+                    <span className="text-sm font-semibold">{getSelectedPlanDetails()?.name}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">Price:</span>
+                    <span className="text-sm font-semibold">
+                      {getSelectedPlanDetails()?.currency} {getSelectedPlanDetails()?.price}/{getSelectedPlanDetails()?.interval}
+                    </span>
+                  </div>
+                  <div className="border-t pt-2 mt-2">
+                    <p className="text-xs font-medium mb-2">Plan Features:</p>
+                    <ul className="space-y-1">
+                      {getSelectedPlanDetails()?.features.map((feature, idx) => (
+                        <li key={idx} className="text-xs text-muted-foreground flex items-center gap-2">
+                          <span className="text-primary">✓</span> {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="bg-primary/10 border border-primary/20 p-4 rounded-md text-center mb-4">
+                  <Button className="w-full">
+                    Complete Payment
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Click the button above to proceed with secure payment
+                  </p>
+                </div>
+
+                <p className="text-sm mb-2">
+                  If you have any questions or need assistance, please don't hesitate to contact our support team.
+                </p>
+                <p className="text-sm">
+                  Best regards,<br />
+                  The Platform Team
+                </p>
+              </div>
+
+              <div className="text-xs text-muted-foreground text-center pt-4 border-t">
+                This is an automated email. Please do not reply to this message.
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEmailPreviewOpen(false)}>
+              Edit Details
+            </Button>
+            <Button onClick={handleCreateSubscription}>
+              <Send className="h-4 w-4 mr-2" />
+              Send Email & Create Subscription
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Tabs defaultValue="subscriptions" className="space-y-6">
         <TabsList className="grid w-full grid-cols-5">
