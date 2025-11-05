@@ -768,30 +768,71 @@ export default function Analytics() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-6">
+                    {/* Key Metrics Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="text-sm font-medium text-muted-foreground">Average Score Improvement</div>
+                          <TrendingUp className="h-5 w-5 text-primary" />
+                        </div>
+                        <div className="text-3xl font-bold text-primary mb-1">+{learningGainsData.avgImprovement}%</div>
+                        <p className="text-xs text-muted-foreground">Since implementing Jesi AI</p>
+                      </div>
+                      
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-green-500/10 to-green-500/5 border border-green-500/20">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="text-sm font-medium text-muted-foreground">Students Improving</div>
+                          <Users className="h-5 w-5 text-green-600" />
+                        </div>
+                        <div className="text-3xl font-bold text-green-600 mb-1">{learningGainsData.studentsImproving10Plus}%</div>
+                        <p className="text-xs text-muted-foreground">With ≥10% improvement</p>
+                      </div>
+
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-amber-500/10 to-amber-500/5 border border-amber-500/20">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="text-sm font-medium text-muted-foreground">Top Performing Subject</div>
+                          <Award className="h-5 w-5 text-amber-600" />
+                        </div>
+                        <div className="text-2xl font-bold text-amber-600 mb-1">Mathematics</div>
+                        <p className="text-xs text-muted-foreground">85% average progress</p>
+                      </div>
+                    </div>
+
+                    {/* Subject Progress with Visual Bars */}
                     <div>
-                      <h4 className="text-sm font-medium mb-4">Learning Progress per Subject (out of 100)</h4>
+                      <h4 className="text-sm font-semibold mb-4">Subject Performance Overview</h4>
+                      <div className="space-y-4">
+                        {learningGainsData.subjectProgress.map((subject) => (
+                          <div key={subject.subject} className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium">{subject.subject}</span>
+                              <span className="text-sm font-bold text-primary">{subject.progress}%</span>
+                            </div>
+                            <Progress value={subject.progress} className="h-3" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Trend Chart */}
+                    <div className="mt-6">
+                      <h4 className="text-sm font-semibold mb-4">Performance Trend</h4>
                       <ResponsiveContainer width="100%" height={250}>
-                        <BarChart data={learningGainsData.subjectProgress} layout="vertical">
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis type="number" domain={[0, 100]} />
-                          <YAxis dataKey="subject" type="category" width={120} />
-                          <Tooltip />
-                          <Bar dataKey="progress" fill="#3B82F6" name="Progress" />
+                        <BarChart data={learningGainsData.subjectProgress}>
+                          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                          <XAxis dataKey="subject" className="text-xs" />
+                          <YAxis domain={[0, 100]} className="text-xs" />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: 'hsl(var(--background))',
+                              border: '1px solid hsl(var(--border))',
+                              borderRadius: '8px'
+                            }}
+                          />
+                          <Bar dataKey="progress" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="p-6 border rounded-lg bg-blue-50 dark:bg-blue-950">
-                        <div className="text-sm text-muted-foreground mb-2">Average Score Improvement</div>
-                        <div className="text-4xl font-bold text-blue-600">+{learningGainsData.avgImprovement}%</div>
-                        <p className="text-sm text-muted-foreground mt-2">Baseline vs. recent test</p>
-                      </div>
-                      <div className="p-6 border rounded-lg">
-                        <div className="text-sm text-muted-foreground mb-2">Students Improving ≥10%</div>
-                        <div className="text-4xl font-bold">{learningGainsData.studentsImproving10Plus}%</div>
-                        <p className="text-sm text-muted-foreground mt-2">Shows measurable impact</p>
-                      </div>
                     </div>
                   </div>
                 </CardContent>
