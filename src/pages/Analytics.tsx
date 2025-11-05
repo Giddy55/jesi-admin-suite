@@ -147,7 +147,8 @@ export default function Analytics() {
   const learnerEngagementData = {
     attendanceBefore: 78,
     attendanceAfter: 92,
-    engagementScore: 85
+    engagementScore: 85,
+    learnerSatisfactionScore: 88
   };
 
   const learningGainsData = {
@@ -716,18 +717,13 @@ export default function Analytics() {
                   <CardDescription>How Jesi AI impacts student engagement in class</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">Attendance Before Jesi</div>
-                      <div className="text-3xl font-bold">{learnerEngagementData.attendanceBefore}%</div>
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">Attendance After Jesi</div>
-                      <div className="text-3xl font-bold text-green-600">{learnerEngagementData.attendanceAfter}%</div>
-                      <Badge className="mt-2 bg-green-600">+{learnerEngagementData.attendanceAfter - learnerEngagementData.attendanceBefore}%</Badge>
+                      <div className="text-sm text-muted-foreground mb-2">Learner Satisfaction Score</div>
+                      <div className="text-3xl font-bold text-green-600">{learnerEngagementData.learnerSatisfactionScore}%</div>
                     </div>
                     <div className="p-4 bg-primary/10 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">Class Engagement Score</div>
+                      <div className="text-sm text-muted-foreground mb-2">Average Class Engagement Rate</div>
                       <div className="text-3xl font-bold text-primary">{learnerEngagementData.engagementScore}%</div>
                     </div>
                   </div>
