@@ -125,14 +125,6 @@ export default function Analytics() {
     ]
   };
 
-  const platformHealthData = {
-    uptime: 99.8,
-    pageLoadTime: 1.2,
-    errorRate: 0.3,
-    concurrentUsers: 12450,
-    bugReports: 23
-  };
-
   // MOCK DATA - Teacher Analytics
   const teacherUsageData = {
     weeklyActive: 87,
@@ -754,39 +746,6 @@ export default function Analytics() {
             </Card>
           </div>
 
-          {/* Platform Health */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
-                Platform Health Metrics
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                <div className="space-y-2">
-                  <div className="text-sm text-muted-foreground">System Uptime</div>
-                  <div className="text-2xl font-bold text-green-600">{platformHealthData.uptime}%</div>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-sm text-muted-foreground">Page Load Time</div>
-                  <div className="text-2xl font-bold">{platformHealthData.pageLoadTime}s</div>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-sm text-muted-foreground">Error Rate</div>
-                  <div className="text-2xl font-bold text-orange-600">{platformHealthData.errorRate}%</div>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-sm text-muted-foreground">Concurrent Users</div>
-                  <div className="text-2xl font-bold">{platformHealthData.concurrentUsers.toLocaleString()}</div>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-sm text-muted-foreground">Bug Reports</div>
-                  <div className="text-2xl font-bold text-red-600">{platformHealthData.bugReports}</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         {/* ========== LEARNING ANALYTICS ========== */}
