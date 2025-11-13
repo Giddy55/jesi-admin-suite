@@ -88,12 +88,6 @@ export default function Analytics() {
     byGender: [
       { gender: 'Male', count: 68900 },
       { gender: 'Female', count: 67889 }
-    ],
-    languages: [
-      { language: 'English', percentage: 100 },
-      { language: 'Twi', percentage: 45 },
-      { language: 'Ga', percentage: 23 },
-      { language: 'Ewe', percentage: 18 }
     ]
   };
 
@@ -481,7 +475,7 @@ export default function Analytics() {
                 <Globe className="h-5 w-5" />
                 User Demographics & Reach
               </CardTitle>
-              <CardDescription>User distribution across regions, demographics, and languages</CardDescription>
+              <CardDescription>User distribution across regions, demographics</CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="region" className="space-y-4">
@@ -489,7 +483,6 @@ export default function Analytics() {
                   <TabsTrigger value="region">By Region</TabsTrigger>
                   <TabsTrigger value="age">By Age</TabsTrigger>
                   <TabsTrigger value="gender">By Gender</TabsTrigger>
-                  <TabsTrigger value="language">Languages</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="region">
@@ -584,17 +577,6 @@ export default function Analytics() {
                   </ResponsiveContainer>
                 </TabsContent>
 
-                <TabsContent value="language">
-                  <div className="space-y-3">
-                    {demographicsData.languages.map((lang, idx) => (
-                      <div key={idx} className="flex items-center gap-3">
-                        <span className="w-24 text-sm font-medium">{lang.language}</span>
-                        <Progress value={lang.percentage} className="flex-1" />
-                        <span className="w-12 text-sm text-muted-foreground">{lang.percentage}%</span>
-                      </div>
-                    ))}
-                  </div>
-                </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
