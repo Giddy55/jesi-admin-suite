@@ -7,11 +7,8 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import LoginPage from "@/components/auth/LoginPage";
 import Dashboard from "@/pages/Dashboard";
 import Schools from "@/pages/Schools";
-import Compliance from "@/pages/Compliance";
 import Analytics from "@/pages/Analytics";
 import Billing from "@/pages/Billing";
-import Communications from "@/pages/Communications";
-import Settings from "@/pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,14 +41,6 @@ const App = () => (
             } 
           />
           <Route 
-            path="/compliance" 
-            element={
-              <ProtectedRoute>
-                <Compliance />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
             path="/analytics" 
             element={
               <ProtectedRoute>
@@ -64,22 +53,6 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Billing />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/support" 
-            element={
-              <ProtectedRoute>
-                <Communications />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/settings" 
-            element={
-              <ProtectedRoute>
-                <Settings />
               </ProtectedRoute>
             } 
           />
