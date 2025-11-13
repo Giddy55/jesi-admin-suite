@@ -11,13 +11,14 @@ import {
   Plus,
   FileCheck,
   Bot,
-  Calendar,
-  MessageCircle
+  CreditCard
 } from 'lucide-react';
 import { mockDashboardKPIs } from '@/lib/mockData';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const kpis = mockDashboardKPIs;
+  const navigate = useNavigate();
 
   const quickActions = [
     {
@@ -28,17 +29,17 @@ export default function Dashboard() {
       variant: 'primary' as const
     },
     {
-      title: 'View Renewals',
-      description: '12 subscriptions expiring soon',
-      icon: Calendar,
-      action: '/billing',
+      title: 'View Users',
+      description: 'Manage platform users',
+      icon: Users,
+      action: '/schools',
       variant: 'secondary' as const
     },
     {
-      title: 'Send Announcement',
-      description: 'Broadcast to all schools',
-      icon: MessageCircle,
-      action: '/support',
+      title: 'View Subscription',
+      description: 'Check billing and plans',
+      icon: CreditCard,
+      action: '/billing',
       variant: 'outline' as const
     },
     {
@@ -148,7 +149,11 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {quickActions.map((action, index) => (
-                <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer">
+                <Card 
+                  key={index} 
+                  className="hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => navigate(action.action)}
+                >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
                       <div className={`p-2 rounded-lg ${
