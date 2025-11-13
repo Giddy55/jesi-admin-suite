@@ -287,17 +287,6 @@ export default function Analytics() {
     }
   };
 
-  const curriculumData = {
-    alignmentRate: 94,
-    coverageBySubject: [
-      { subject: 'Mathematics', coverage: 78 },
-      { subject: 'English', coverage: 85 },
-      { subject: 'Science', coverage: 72 },
-      { subject: 'Social Studies', coverage: 68 },
-      { subject: 'RME', coverage: 90 }
-    ],
-    knowledgeScore: 87
-  };
 
   const teacherSatisfactionData = {
     csat: 5,
@@ -1168,47 +1157,6 @@ export default function Analytics() {
                       );
                     }
                   })()}
-                </CardContent>
-              </Card>
-
-              {/* Curriculum Understanding */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BookOpen className="h-5 w-5" />
-                    Curriculum Understanding
-                  </CardTitle>
-                  <CardDescription>Alignment with GES curriculum standards</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="flex items-center justify-between p-4 bg-green-50 dark:bg-green-950 rounded-lg">
-                    <div>
-                      <div className="text-sm text-muted-foreground">Curriculum Alignment Rate</div>
-                      <p className="text-xs text-muted-foreground mt-1">% of lesson plans matching GES outcomes</p>
-                    </div>
-                    <div className="text-4xl font-bold text-green-600">{curriculumData.alignmentRate}%</div>
-                  </div>
-
-                  <div>
-                    <h4 className="text-sm font-medium mb-4">Curriculum Coverage Progress Tracker</h4>
-                    <div className="space-y-3">
-                      {curriculumData.coverageBySubject.map((item, idx) => (
-                        <div key={idx}>
-                          <div className="flex justify-between text-sm mb-1">
-                            <span className="font-medium">{item.subject}</span>
-                            <span className="text-muted-foreground">{item.coverage}%</span>
-                          </div>
-                          <Progress value={item.coverage} />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <div className="text-sm text-muted-foreground mb-2">Curriculum Knowledge Score</div>
-                    <div className="text-3xl font-bold">{curriculumData.knowledgeScore}%</div>
-                    <p className="text-xs text-muted-foreground mt-1">Teacher self-assessment</p>
-                  </div>
                 </CardContent>
               </Card>
 
