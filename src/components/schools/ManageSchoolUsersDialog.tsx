@@ -25,8 +25,6 @@ export default function ManageSchoolUsersDialog({ school, open, onOpenChange }: 
     subjects: ''
   });
 
-  if (!school) return null;
-
   // Mock user data - in production, this would come from the database
   const [mockUsers, setMockUsers] = useState([
     { id: 1, name: 'John Mensah', email: 'john.mensah@school.edu', role: 'Teacher', status: 'active', subjects: 'Mathematics, Physics' },
@@ -34,6 +32,8 @@ export default function ManageSchoolUsersDialog({ school, open, onOpenChange }: 
     { id: 3, name: 'Kwame Osei', email: 'kwame.osei@school.edu', role: 'Admin', status: 'active', subjects: 'N/A' },
     { id: 4, name: 'Ama Boateng', email: 'ama.boateng@school.edu', role: 'Student', status: 'active', subjects: 'All Subjects' },
   ]);
+
+  if (!school) return null;
 
   const handleAddUser = () => {
     if (!newUser.name || !newUser.email || !newUser.role) {
