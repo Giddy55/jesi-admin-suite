@@ -249,15 +249,24 @@ export default function Schools() {
           </CardContent>
         </Card>
 
-        <Card className="kpi-card">
-          <CardContent className="p-4">
+        <Card className="kpi-card relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16" />
+          <CardContent className="p-4 relative">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <MapPin className="h-4 w-4 text-primary" />
+              <div className="p-3 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl shadow-sm">
+                <MapPin className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">100/274</p>
-                <p className="text-sm text-muted-foreground">Reach in Districts</p>
+                <p className="text-2xl font-bold text-foreground">10/16</p>
+                <p className="text-sm text-muted-foreground">Reach in Regions</p>
+              </div>
+            </div>
+            <div className="mt-3 pt-3 border-t border-border/50">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <div className="flex-1 bg-muted rounded-full h-1.5 overflow-hidden">
+                  <div className="bg-primary h-full rounded-full transition-all duration-500" style={{ width: '62.5%' }} />
+                </div>
+                <span className="font-medium">62.5%</span>
               </div>
             </div>
           </CardContent>
