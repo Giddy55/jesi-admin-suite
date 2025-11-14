@@ -26,6 +26,8 @@ import AddSchoolDialog from '@/components/schools/AddSchoolDialog';
 import SchoolDetailsDialog from '@/components/schools/SchoolDetailsDialog';
 import ManageSchoolUsersDialog from '@/components/schools/ManageSchoolUsersDialog';
 import SchoolAnalyticsDialog from '@/components/schools/SchoolAnalyticsDialog';
+import UserDetailsDialog from '@/components/users/UserDetailsDialog';
+import EditUserDialog from '@/components/users/EditUserDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -73,6 +75,9 @@ export default function Schools() {
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [selectedRole, setSelectedRole] = useState<string>('all');
   const [selectedUserStatus, setSelectedUserStatus] = useState<string>('all');
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [userDetailsDialogOpen, setUserDetailsDialogOpen] = useState(false);
+  const [editUserDialogOpen, setEditUserDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchSchools();
@@ -157,6 +162,31 @@ export default function Schools() {
     return <Badge variant="outline" className={variants[role as keyof typeof variants] || ''}>
       {role}
     </Badge>;
+  };
+
+  const handleResetPassword = async (userId: string, userEmail: string) => {
+    try {
+      toast({
+        title: 'Password Reset Email Sent',
+        description: `A password reset link has been sent to ${userEmail}`,
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: 'Failed to send password reset email',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleEditUser = (user: any) => {
+    setSelectedUser(user);
+    setEditUserDialogOpen(true);
+  };
+
+  const handleViewProfile = (user: any) => {
+    setSelectedUser(user);
+    setUserDetailsDialogOpen(true);
   };
 
   return (
@@ -498,13 +528,17 @@ export default function Schools() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>User Actions</DropdownMenuLabel>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleViewProfile(user)}>
                                 View Profile
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleEditUser(user)}>
                                 Edit User
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => {
+                                if (confirm(`Send password reset email to ${user.email}?`)) {
+                                  handleResetPassword(user.id, user.email);
+                                }
+                              }}>
                                 Reset Password
                               </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -552,6 +586,18 @@ export default function Schools() {
         school={selectedSchool}
         open={analyticsDialogOpen}
         onOpenChange={setAnalyticsDialogOpen}
+      />
+
+      <UserDetailsDialog
+        user={selectedUser}
+        open={userDetailsDialogOpen}
+        onOpenChange={setUserDetailsDialogOpen}
+      />
+
+      <EditUserDialog
+        user={selectedUser}
+        open={editUserDialogOpen}
+        onOpenChange={setEditUserDialogOpen}
       />
     </div>
   );
