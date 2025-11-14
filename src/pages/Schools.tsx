@@ -207,66 +207,69 @@ export default function Schools() {
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="kpi-card">
-          <CardContent className="p-4">
+        <Card className="kpi-card relative overflow-hidden group hover-scale">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-all duration-300 group-hover:bg-primary/10" />
+          <CardContent className="p-4 relative">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Building2 className="h-4 w-4 text-primary" />
+              <div className="p-3 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl shadow-sm transition-all duration-300 group-hover:shadow-md">
+                <Building2 className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{schools.length}</p>
+                <p className="text-2xl font-bold text-foreground">{schools.length}</p>
                 <p className="text-sm text-muted-foreground">Total Schools</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="kpi-card">
-          <CardContent className="p-4">
+        <Card className="kpi-card relative overflow-hidden group hover-scale">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-all duration-300 group-hover:bg-primary/10" />
+          <CardContent className="p-4 relative">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Users className="h-4 w-4 text-primary" />
+              <div className="p-3 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl shadow-sm transition-all duration-300 group-hover:shadow-md">
+                <Users className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">12,458</p>
+                <p className="text-2xl font-bold text-foreground">12,458</p>
                 <p className="text-sm text-muted-foreground">Learners</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="kpi-card">
-          <CardContent className="p-4">
+        <Card className="kpi-card relative overflow-hidden group hover-scale">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-all duration-300 group-hover:bg-primary/10" />
+          <CardContent className="p-4 relative">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <GraduationCap className="h-4 w-4 text-primary" />
+              <div className="p-3 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl shadow-sm transition-all duration-300 group-hover:shadow-md">
+                <GraduationCap className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">847</p>
+                <p className="text-2xl font-bold text-foreground">847</p>
                 <p className="text-sm text-muted-foreground">Teachers</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="kpi-card relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16" />
+        <Card className="kpi-card relative overflow-hidden group hover-scale">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-all duration-300 group-hover:bg-primary/10" />
           <CardContent className="p-4 relative">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl shadow-sm">
+              <div className="p-3 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl shadow-sm transition-all duration-300 group-hover:shadow-md">
                 <MapPin className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">10/16</p>
-                <p className="text-sm text-muted-foreground">Reach in Regions</p>
+                <p className="text-2xl font-bold text-foreground">100/274</p>
+                <p className="text-sm text-muted-foreground">Reach</p>
               </div>
             </div>
             <div className="mt-3 pt-3 border-t border-border/50">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <div className="flex-1 bg-muted rounded-full h-1.5 overflow-hidden">
-                  <div className="bg-primary h-full rounded-full transition-all duration-500" style={{ width: '62.5%' }} />
+                  <div className="bg-primary h-full rounded-full transition-all duration-500" style={{ width: '36.5%' }} />
                 </div>
-                <span className="font-medium">62.5%</span>
+                <span className="font-medium">36.5%</span>
               </div>
             </div>
           </CardContent>
