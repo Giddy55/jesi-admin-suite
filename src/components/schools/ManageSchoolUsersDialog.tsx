@@ -4,12 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Users, UserPlus, Mail, Shield, GraduationCap, Upload, Download } from 'lucide-react';
+import { Users, UserPlus, Mail, Shield, GraduationCap, Upload, Download, ChevronDown } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import type { School } from '@/lib/mockData';
 import EditUserDialog from '@/components/users/EditUserDialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 
 interface ManageSchoolUsersDialogProps {
   school: School | null;
@@ -235,19 +236,39 @@ export default function ManageSchoolUsersDialog({ school, open, onOpenChange }: 
           </div>
 
           {/* Add User Buttons */}
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" className="flex items-center gap-2" onClick={downloadSampleCSV}>
-              <Download className="h-4 w-4" />
-              Download Sample
-            </Button>
-            <Button variant="outline" className="flex items-center gap-2" onClick={() => fileInputRef.current?.click()}>
-              <Upload className="h-4 w-4" />
-              Bulk Upload Teachers
-            </Button>
-            <Button className="flex items-center gap-2" onClick={() => setAddUserOpen(true)}>
+          <div className="flex justify-end gap-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2 hover-scale">
+                  <Upload className="h-4 w-4" />
+                  Bulk Upload
+                  <ChevronDown className="h-4 w-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 animate-scale-in">
+                <DropdownMenuItem onClick={() => fileInputRef.current?.click()} className="gap-2 cursor-pointer">
+                  <Upload className="h-4 w-4" />
+                  <div className="flex flex-col">
+                    <span className="font-medium">Upload CSV/Excel</span>
+                    <span className="text-xs text-muted-foreground">Import teachers from file</span>
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={downloadSampleCSV} className="gap-2 cursor-pointer">
+                  <Download className="h-4 w-4" />
+                  <div className="flex flex-col">
+                    <span className="font-medium">Download Sample</span>
+                    <span className="text-xs text-muted-foreground">Get CSV template</span>
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <Button className="flex items-center gap-2 hover-scale" onClick={() => setAddUserOpen(true)}>
               <UserPlus className="h-4 w-4" />
               Add New User
             </Button>
+            
             <input
               ref={fileInputRef}
               type="file"
