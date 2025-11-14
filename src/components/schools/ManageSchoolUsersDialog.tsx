@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Users, UserPlus, Mail, Shield, GraduationCap } from 'lucide-react';
-import { useState } from 'react';
+import { Users, UserPlus, Mail, Shield, GraduationCap, Upload, Download } from 'lucide-react';
+import { useState, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import type { School } from '@/lib/mockData';
+import EditUserDialog from '@/components/users/EditUserDialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 interface ManageSchoolUsersDialogProps {
   school: School | null;
@@ -17,7 +19,11 @@ interface ManageSchoolUsersDialogProps {
 
 export default function ManageSchoolUsersDialog({ school, open, onOpenChange }: ManageSchoolUsersDialogProps) {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [addUserOpen, setAddUserOpen] = useState(false);
+  const [editUserOpen, setEditUserOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [userToRemove, setUserToRemove] = useState<any>(null);
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
@@ -84,6 +90,111 @@ export default function ManageSchoolUsersDialog({ school, open, onOpenChange }: 
     </Badge>;
   };
 
+  const handleEditUser = (user: any) => {
+    setSelectedUser(user);
+    setEditUserOpen(true);
+  };
+
+  const handleRemoveUser = (user: any) => {
+    setUserToRemove(user);
+  };
+
+  const confirmRemoveUser = () => {
+    if (userToRemove) {
+      setMockUsers(mockUsers.filter(u => u.id !== userToRemove.id));
+      toast({
+        title: "User Removed",
+        description: `${userToRemove.name} has been removed from ${school.name}.`,
+      });
+      setUserToRemove(null);
+    }
+  };
+
+  const handleEditSuccess = () => {
+    toast({
+      title: "User Updated",
+      description: "User information has been updated successfully.",
+    });
+  };
+
+  const downloadSampleCSV = () => {
+    const csvContent = `Name,Email,Role,Subjects\nJohn Doe,john.doe@school.edu,Teacher,"Mathematics, Physics"\nJane Smith,jane.smith@school.edu,Teacher,"English, Literature"\nMichael Brown,michael.brown@school.edu,Admin,N/A`;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'teachers_upload_template.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({
+      title: "Sample Downloaded",
+      description: "Sample CSV template has been downloaded.",
+    });
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target?.result as string;
+      const lines = text.split('\n');
+      const newUsers: any[] = [];
+      
+      // Skip header row
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        
+        // Parse CSV line (handle quoted values)
+        const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+        if (matches && matches.length >= 3) {
+          const name = matches[0].replace(/"/g, '').trim();
+          const email = matches[1].replace(/"/g, '').trim();
+          const role = matches[2].replace(/"/g, '').trim();
+          const subjects = matches[3] ? matches[3].replace(/"/g, '').trim() : '';
+          
+          if (name && email && role) {
+            newUsers.push({
+              id: mockUsers.length + newUsers.length + 1,
+              name,
+              email,
+              role,
+              status: 'active',
+              subjects: role === 'Teacher' ? subjects : role === 'Student' ? 'All Subjects' : 'N/A'
+            });
+          }
+        }
+      }
+      
+      if (newUsers.length > 0) {
+        setMockUsers([...mockUsers, ...newUsers]);
+        toast({
+          title: "Users Imported",
+          description: `Successfully imported ${newUsers.length} user(s) from CSV file.`,
+        });
+      } else {
+        toast({
+          title: "Import Failed",
+          description: "No valid users found in the CSV file.",
+          variant: "destructive"
+        });
+      }
+    };
+    
+    reader.readAsText(file);
+    
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
@@ -123,12 +234,27 @@ export default function ManageSchoolUsersDialog({ school, open, onOpenChange }: 
             </div>
           </div>
 
-          {/* Add User Button */}
-          <div className="flex justify-end">
+          {/* Add User Buttons */}
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" className="flex items-center gap-2" onClick={downloadSampleCSV}>
+              <Download className="h-4 w-4" />
+              Download Sample
+            </Button>
+            <Button variant="outline" className="flex items-center gap-2" onClick={() => fileInputRef.current?.click()}>
+              <Upload className="h-4 w-4" />
+              Bulk Upload Teachers
+            </Button>
             <Button className="flex items-center gap-2" onClick={() => setAddUserOpen(true)}>
               <UserPlus className="h-4 w-4" />
               Add New User
             </Button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv,.xlsx,.xls"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
           </div>
 
           {/* Users List */}
@@ -158,8 +284,8 @@ export default function ManageSchoolUsersDialog({ school, open, onOpenChange }: 
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">Edit</Button>
-                    <Button variant="outline" size="sm" className="text-destructive">Remove</Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEditUser(user)}>Edit</Button>
+                    <Button variant="outline" size="sm" className="text-destructive" onClick={() => handleRemoveUser(user)}>Remove</Button>
                   </div>
                 </div>
               </div>
@@ -237,6 +363,32 @@ export default function ManageSchoolUsersDialog({ school, open, onOpenChange }: 
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Edit User Dialog */}
+      <EditUserDialog
+        user={selectedUser}
+        open={editUserOpen}
+        onOpenChange={setEditUserOpen}
+        onSuccess={handleEditSuccess}
+      />
+
+      {/* Remove User Confirmation Dialog */}
+      <AlertDialog open={!!userToRemove} onOpenChange={() => setUserToRemove(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove User</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to remove {userToRemove?.name}? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmRemoveUser} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Remove
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
