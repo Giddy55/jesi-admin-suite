@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 interface EditUserDialogProps {
@@ -16,13 +16,27 @@ interface EditUserDialogProps {
 export default function EditUserDialog({ user, open, onOpenChange, onSuccess }: EditUserDialogProps) {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
-    role: user?.role || '',
-    school: user?.school || '',
-    subjects: user?.subjects || '',
-    status: user?.status || 'active',
+    name: '',
+    email: '',
+    role: '',
+    school: '',
+    subjects: '',
+    status: 'active',
   });
+
+  // Update form data when user changes or dialog opens
+  useEffect(() => {
+    if (user && open) {
+      setFormData({
+        name: user.name || '',
+        email: user.email || '',
+        role: user.role || '',
+        school: user.school || '',
+        subjects: user.subjects || '',
+        status: user.status || 'active',
+      });
+    }
+  }, [user, open]);
 
   if (!user) return null;
 
