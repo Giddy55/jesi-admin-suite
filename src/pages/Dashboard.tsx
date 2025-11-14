@@ -85,7 +85,7 @@ export default function Dashboard() {
           <TrendingUp className="h-5 w-5 text-primary" />
           <h2 className="text-xl font-semibold text-foreground">Platform Adoption & Growth</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="hover-scale transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -104,46 +104,14 @@ export default function Dashboard() {
           <Card className="hover-scale transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Active Schools
-              </CardTitle>
-              <School className="h-4 w-4 text-success" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">{kpis.activeSchools}</div>
-              <p className="text-xs text-success mt-1">
-                Currently active
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="hover-scale transition-all">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Active Teachers
-              </CardTitle>
-              <GraduationCap className="h-4 w-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">{kpis.activeTeachersPercentage}%</div>
-              <Progress value={kpis.activeTeachersPercentage} className="mt-2" />
-              <p className="text-xs text-muted-foreground mt-1">
-                {kpis.activeTeachers.toLocaleString()} teachers
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="hover-scale transition-all">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Active Learners
+                Learners
               </CardTitle>
               <BookOpen className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-foreground">{kpis.activeStudentsPercentage}%</div>
-              <Progress value={kpis.activeStudentsPercentage} className="mt-2" />
+              <div className="text-2xl font-bold text-foreground">{kpis.activeStudents.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground mt-1">
-                {kpis.activeStudents.toLocaleString()} students
+                Active students
               </p>
             </CardContent>
           </Card>
@@ -151,14 +119,29 @@ export default function Dashboard() {
           <Card className="hover-scale transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                New Sign-ups
+                Teachers
               </CardTitle>
-              <UserPlus className="h-4 w-4 text-success" />
+              <GraduationCap className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-foreground">{kpis.newSignups}</div>
-              <p className="text-xs text-success mt-1">
-                This month
+              <div className="text-2xl font-bold text-foreground">{kpis.activeTeachers.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Active teachers
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover-scale transition-all">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Reach
+              </CardTitle>
+              <MapPin className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">100/274</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Districts
               </p>
             </CardContent>
           </Card>
