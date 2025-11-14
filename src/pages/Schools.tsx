@@ -22,7 +22,6 @@ import AddSchoolDialog from '@/components/schools/AddSchoolDialog';
 import SchoolDetailsDialog from '@/components/schools/SchoolDetailsDialog';
 import ManageSchoolUsersDialog from '@/components/schools/ManageSchoolUsersDialog';
 import SchoolAnalyticsDialog from '@/components/schools/SchoolAnalyticsDialog';
-import SchoolSubscriptionDialog from '@/components/schools/SchoolSubscriptionDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -52,7 +51,6 @@ export default function Schools() {
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [usersDialogOpen, setUsersDialogOpen] = useState(false);
   const [analyticsDialogOpen, setAnalyticsDialogOpen] = useState(false);
-  const [subscriptionDialogOpen, setSubscriptionDialogOpen] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
 
   useEffect(() => {
@@ -79,29 +77,6 @@ export default function Schools() {
     }
   };
 
-  const handleSuspendSchool = async (schoolId: string) => {
-    try {
-      const { error } = await supabase
-        .from('schools')
-        .update({ subscription_status: 'expired' })
-        .eq('id', schoolId);
-
-      if (error) throw error;
-
-      toast({
-        title: 'Success',
-        description: 'School suspended successfully',
-      });
-
-      fetchSchools();
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message,
-        variant: 'destructive',
-      });
-    }
-  };
 
   const filteredSchools = schools.filter(school => {
     const matchesSearch = school.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -351,23 +326,6 @@ export default function Schools() {
                           }}>
                             School Analytics
                           </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => {
-                            setSelectedSchool(school);
-                            setSubscriptionDialogOpen(true);
-                          }}>
-                            School Subscription
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            className="text-destructive"
-                            onClick={() => {
-                              if (confirm('Are you sure you want to suspend this school?')) {
-                                handleSuspendSchool(school.id);
-                              }
-                            }}
-                          >
-                            Suspend School
-                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </td>
@@ -411,13 +369,6 @@ export default function Schools() {
         school={selectedSchool}
         open={analyticsDialogOpen}
         onOpenChange={setAnalyticsDialogOpen}
-      />
-
-      <SchoolSubscriptionDialog
-        school={selectedSchool}
-        open={subscriptionDialogOpen}
-        onOpenChange={setSubscriptionDialogOpen}
-        onSuccess={fetchSchools}
       />
     </div>
   );
