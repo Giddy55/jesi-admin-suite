@@ -264,14 +264,6 @@ export default function Schools() {
                 <p className="text-sm text-muted-foreground">Reach</p>
               </div>
             </div>
-            <div className="mt-3 pt-3 border-t border-border/50">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <div className="flex-1 bg-muted rounded-full h-1.5 overflow-hidden">
-                  <div className="bg-primary h-full rounded-full transition-all duration-500" style={{ width: '36.5%' }} />
-                </div>
-                <span className="font-medium">36.5%</span>
-              </div>
-            </div>
           </CardContent>
         </Card>
       </div>
