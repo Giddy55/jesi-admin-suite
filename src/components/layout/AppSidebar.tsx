@@ -77,9 +77,6 @@ export function AppSidebar() {
 
       <SidebarContent className="flex-1 p-2">
         <SidebarGroup>
-          <SidebarGroupLabel className="text-sidebar-foreground/70 text-xs font-semibold mb-2">
-            {!isCollapsed && "Navigation"}
-          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
               {navigationItems.map((item) => (
