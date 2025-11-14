@@ -224,12 +224,12 @@ export default function Schools() {
         <Card className="kpi-card">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-success/10 rounded-lg">
-                <Users className="h-4 w-4 text-success" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Users className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{schools.filter(s => s.subscription_status === 'active').length}</p>
-                <p className="text-sm text-muted-foreground">Active Subscriptions</p>
+                <p className="text-2xl font-bold">12,458</p>
+                <p className="text-sm text-muted-foreground">Learners</p>
               </div>
             </div>
           </CardContent>
@@ -238,12 +238,12 @@ export default function Schools() {
         <Card className="kpi-card">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-warning/10 rounded-lg">
-                <Calendar className="h-4 w-4 text-warning" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <GraduationCap className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{schools.filter(s => s.subscription_status === 'trial').length}</p>
-                <p className="text-sm text-muted-foreground">Trial Schools</p>
+                <p className="text-2xl font-bold">847</p>
+                <p className="text-sm text-muted-foreground">Teachers</p>
               </div>
             </div>
           </CardContent>
@@ -252,12 +252,12 @@ export default function Schools() {
         <Card className="kpi-card">
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-destructive/10 rounded-lg">
-                <AlertCircle className="h-4 w-4 text-destructive" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <MapPin className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{schools.filter(s => s.subscription_status === 'expired').length}</p>
-                <p className="text-sm text-muted-foreground">Expired Subscriptions</p>
+                <p className="text-2xl font-bold">100/274</p>
+                <p className="text-sm text-muted-foreground">Reach in Districts</p>
               </div>
             </div>
           </CardContent>
