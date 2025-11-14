@@ -973,77 +973,10 @@ export default function Billing() {
             </Card>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Generate Financial Report</CardTitle>
-              <CardDescription>Create detailed financial reports for specific periods</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-4 items-end">
-                <div className="grid gap-2">
-                  <Label>Date Range</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-80 justify-start text-left font-normal",
-                          !selectedDateRange && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {selectedDateRange?.from ? (
-                          selectedDateRange.to ? (
-                            <>
-                              {format(selectedDateRange.from, "LLL dd, y")} -{" "}
-                              {format(selectedDateRange.to, "LLL dd, y")}
-                            </>
-                          ) : (
-                            format(selectedDateRange.from, "LLL dd, y")
-                          )
-                        ) : (
-                          "Pick a date range"
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        initialFocus
-                        mode="range"
-                        defaultMonth={selectedDateRange?.from}
-                        selected={selectedDateRange}
-                        onSelect={setSelectedDateRange}
-                        numberOfMonths={2}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="grid gap-2">
-                  <Label>Report Type</Label>
-                  <Select defaultValue="detailed">
-                    <SelectTrigger className="w-48">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="summary">Summary Report</SelectItem>
-                      <SelectItem value="detailed">Detailed Report</SelectItem>
-                      <SelectItem value="subscription">Subscription Report</SelectItem>
-                      <SelectItem value="revenue">Revenue Report</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button>
-                  <Download className="h-4 w-4 mr-2" />
-                  Generate Report
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Revenue Breakdown</CardTitle>
+                <CardTitle>Revenue by Region</CardTitle>
                 <CardDescription>Analyze revenue distribution across different segments</CardDescription>
                 <div className="flex gap-2 mt-4">
                   <Button 
