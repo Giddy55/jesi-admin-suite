@@ -13,7 +13,11 @@ import {
   MapPin,
   Calendar,
   Crown,
-  AlertCircle
+  AlertCircle,
+  Mail,
+  Shield,
+  GraduationCap,
+  UserPlus
 } from 'lucide-react';
 import { GHANA_REGIONS, SCHOOL_TYPES, DISTRICTS, type School } from '@/lib/mockData';
 import { supabase } from '@/integrations/supabase/client';
@@ -37,6 +41,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 
 export default function Schools() {
   const { toast } = useToast();
@@ -52,6 +62,17 @@ export default function Schools() {
   const [usersDialogOpen, setUsersDialogOpen] = useState(false);
   const [analyticsDialogOpen, setAnalyticsDialogOpen] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
+  
+  // User directory state
+  const [users, setUsers] = useState([
+    { id: '1', name: 'John Mensah', email: 'john.mensah@school.edu', role: 'Teacher', status: 'active', school: 'Accra Academy', subjects: 'Mathematics, Physics' },
+    { id: '2', name: 'Grace Asante', email: 'grace.asante@school.edu', role: 'Teacher', status: 'active', school: 'Wesley Girls High School', subjects: 'English, Literature' },
+    { id: '3', name: 'Kwame Osei', email: 'kwame.osei@school.edu', role: 'Admin', status: 'active', school: 'Mfantsipim School', subjects: 'N/A' },
+    { id: '4', name: 'Ama Boateng', email: 'ama.boateng@school.edu', role: 'Student', status: 'active', school: 'Accra Academy', subjects: 'All Subjects' },
+  ]);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [selectedRole, setSelectedRole] = useState<string>('all');
+  const [selectedUserStatus, setSelectedUserStatus] = useState<string>('all');
 
   useEffect(() => {
     fetchSchools();
@@ -89,6 +110,16 @@ export default function Schools() {
     return matchesSearch && matchesRegion && matchesStatus && matchesSchoolType && matchesDistrict;
   });
 
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = user.name.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+                         user.email.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+                         user.school.toLowerCase().includes(userSearchQuery.toLowerCase());
+    const matchesRole = selectedRole === 'all' || user.role === selectedRole;
+    const matchesStatus = selectedUserStatus === 'all' || user.status === selectedUserStatus;
+    
+    return matchesSearch && matchesRole && matchesStatus;
+  });
+
   const getStatusBadge = (status: School['subscription_status']) => {
     const variants = {
       active: 'status-active',
@@ -106,6 +137,26 @@ export default function Schools() {
   const getTierIcon = (tier: School['subscription_tier']) => {
     if (tier === 'Premium') return <Crown className="h-3 w-3 text-warning" />;
     return null;
+  };
+
+  const getRoleIcon = (role: string) => {
+    switch (role) {
+      case 'Admin': return <Shield className="h-4 w-4 text-primary" />;
+      case 'Teacher': return <Users className="h-4 w-4 text-success" />;
+      case 'Student': return <GraduationCap className="h-4 w-4 text-warning" />;
+      default: return <Users className="h-4 w-4" />;
+    }
+  };
+
+  const getRoleBadge = (role: string) => {
+    const variants = {
+      'Admin': 'bg-primary/10 text-primary',
+      'Teacher': 'bg-success/10 text-success',
+      'Student': 'bg-warning/10 text-warning',
+    };
+    return <Badge variant="outline" className={variants[role as keyof typeof variants] || ''}>
+      {role}
+    </Badge>;
   };
 
   return (
@@ -183,15 +234,23 @@ export default function Schools() {
         </Card>
       </div>
 
-      {/* Filters and Search */}
+      {/* Directory Tabs */}
       <Card>
         <CardHeader>
-          <CardTitle>Schools Directory</CardTitle>
+          <CardTitle>Directory</CardTitle>
           <CardDescription>
-            View and manage all educational institutions on the platform
+            View and manage schools and users on the platform
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <Tabs defaultValue="schools" className="w-full">
+            <TabsList className="grid w-full max-w-md grid-cols-2 mb-6">
+              <TabsTrigger value="schools">Schools Directory</TabsTrigger>
+              <TabsTrigger value="users">User Directory</TabsTrigger>
+            </TabsList>
+
+            {/* Schools Directory Tab */}
+            <TabsContent value="schools" className="space-y-4">
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -335,15 +394,139 @@ export default function Schools() {
             </table>
           </div>
 
-          {filteredSchools.length === 0 && (
-            <div className="text-center py-12">
-              <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">No schools found</h3>
-              <p className="text-muted-foreground">
-                Try adjusting your search or filter criteria
-              </p>
-            </div>
-          )}
+              {filteredSchools.length === 0 && (
+                <div className="text-center py-12">
+                  <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No schools found</h3>
+                  <p className="text-muted-foreground">
+                    Try adjusting your search or filter criteria
+                  </p>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* User Directory Tab */}
+            <TabsContent value="users" className="space-y-4">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                  <Input
+                    placeholder="Search users by name, email, or school..."
+                    value={userSearchQuery}
+                    onChange={(e) => setUserSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                
+                <Select value={selectedRole} onValueChange={setSelectedRole}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="All Roles" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Roles</SelectItem>
+                    <SelectItem value="Admin">Admin</SelectItem>
+                    <SelectItem value="Teacher">Teacher</SelectItem>
+                    <SelectItem value="Student">Student</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={selectedUserStatus} onValueChange={setSelectedUserStatus}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="All Statuses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Users Table */}
+              <div className="rounded-lg border border-border overflow-hidden">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>School</th>
+                      <th>Role</th>
+                      <th>Subjects</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredUsers.map((user) => (
+                      <tr key={user.id}>
+                        <td>
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                              {getRoleIcon(user.role)}
+                            </div>
+                            <div>
+                              <p className="font-medium text-foreground">{user.name}</p>
+                              <p className="text-sm text-muted-foreground flex items-center gap-1">
+                                <Mail className="h-3 w-3" />
+                                {user.email}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="flex items-center gap-1">
+                            <Building2 className="h-3 w-3 text-muted-foreground" />
+                            <span className="text-sm">{user.school}</span>
+                          </div>
+                        </td>
+                        <td>
+                          {getRoleBadge(user.role)}
+                        </td>
+                        <td>
+                          <span className="text-sm text-muted-foreground">{user.subjects}</span>
+                        </td>
+                        <td>
+                          <Badge variant="outline" className={user.status === 'active' ? 'status-badge status-active' : 'status-badge status-expired'}>
+                            {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                          </Badge>
+                        </td>
+                        <td>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>User Actions</DropdownMenuLabel>
+                              <DropdownMenuItem>
+                                View Profile
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                Edit User
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                Reset Password
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {filteredUsers.length === 0 && (
+                <div className="text-center py-12">
+                  <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">No users found</h3>
+                  <p className="text-muted-foreground">
+                    Try adjusting your search or filter criteria
+                  </p>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 
