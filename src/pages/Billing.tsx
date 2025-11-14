@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, Download, Edit, Eye, Filter, Plus, Send, Mail } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data
@@ -104,7 +104,41 @@ const mockFinancialData = {
   totalRevenue: 200000,
   activeSubscriptions: 62,
   churnRate: 5.2,
-  averageRevenuePerUser: 420
+  averageRevenuePerUser: 420,
+  revenueByRegion: [
+    { region: "Greater Accra", revenue: 85000, schools: 28, percentage: 42.5 },
+    { region: "Ashanti", revenue: 52000, schools: 18, percentage: 26.0 },
+    { region: "Central", revenue: 35000, schools: 10, percentage: 17.5 },
+    { region: "Western", revenue: 18000, schools: 4, percentage: 9.0 },
+    { region: "Eastern", revenue: 10000, schools: 2, percentage: 5.0 }
+  ],
+  revenueBySchoolType: [
+    { type: "Public Senior High", revenue: 95000, schools: 35, percentage: 47.5 },
+    { type: "Private Senior High", revenue: 62000, schools: 18, percentage: 31.0 },
+    { type: "Technical Institute", revenue: 28000, schools: 6, percentage: 14.0 },
+    { type: "University", revenue: 15000, schools: 3, percentage: 7.5 }
+  ],
+  revenueByPlan: [
+    { plan: "Enterprise", revenue: 82000, subscribers: 12, percentage: 41.0 },
+    { plan: "Premium", revenue: 65000, subscribers: 22, percentage: 32.5 },
+    { plan: "Standard", revenue: 38000, subscribers: 20, percentage: 19.0 },
+    { plan: "Basic", revenue: 15000, subscribers: 8, percentage: 7.5 }
+  ],
+  planPopularity: [
+    { plan: "Premium", subscribers: 22, growth: "+8%", totalRevenue: 65000 },
+    { plan: "Standard", subscribers: 20, growth: "+5%", totalRevenue: 38000 },
+    { plan: "Enterprise", subscribers: 12, growth: "+15%", totalRevenue: 82000 },
+    { plan: "Basic", subscribers: 8, growth: "-2%", totalRevenue: 15000 }
+  ],
+  renewalRates: {
+    overall: 87.5,
+    byPlan: [
+      { plan: "Enterprise", rate: 95.0, renewed: 11, total: 12 },
+      { plan: "Premium", rate: 90.5, renewed: 20, total: 22 },
+      { plan: "Standard", rate: 85.0, renewed: 17, total: 20 },
+      { plan: "Basic", rate: 75.0, renewed: 6, total: 8 }
+    ]
+  }
 };
 
 const mockPaymentProviders = [
@@ -128,6 +162,9 @@ export default function Billing() {
   const [emailPreviewOpen, setEmailPreviewOpen] = useState(false);
   const [revenueFilter, setRevenueFilter] = useState<string>('all');
   const [revenueSchoolFilter, setRevenueSchoolFilter] = useState<string>('all');
+  const [revenueBreakdownView, setRevenueBreakdownView] = useState<"region" | "schoolType" | "plan">("region");
+  
+  const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', 'hsl(var(--chart-1))', 'hsl(var(--chart-2))'];
   
   const [newSubscription, setNewSubscription] = useState({
     schoolName: '',
@@ -999,6 +1036,179 @@ export default function Billing() {
                   <Download className="h-4 w-4 mr-2" />
                   Generate Report
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Revenue Breakdown</CardTitle>
+                <CardDescription>Analyze revenue distribution across different segments</CardDescription>
+                <div className="flex gap-2 mt-4">
+                  <Button 
+                    variant={revenueBreakdownView === "region" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setRevenueBreakdownView("region")}
+                  >
+                    By Region
+                  </Button>
+                  <Button 
+                    variant={revenueBreakdownView === "schoolType" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setRevenueBreakdownView("schoolType")}
+                  >
+                    By School Type
+                  </Button>
+                  <Button 
+                    variant={revenueBreakdownView === "plan" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setRevenueBreakdownView("plan")}
+                  >
+                    By Plan
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={
+                        revenueBreakdownView === "region" 
+                          ? mockFinancialData.revenueByRegion.map(r => ({ name: r.region, value: r.revenue }))
+                          : revenueBreakdownView === "schoolType"
+                          ? mockFinancialData.revenueBySchoolType.map(s => ({ name: s.type, value: s.revenue }))
+                          : mockFinancialData.revenueByPlan.map(p => ({ name: p.plan, value: p.revenue }))
+                      }
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {(revenueBreakdownView === "region" 
+                        ? mockFinancialData.revenueByRegion 
+                        : revenueBreakdownView === "schoolType"
+                        ? mockFinancialData.revenueBySchoolType
+                        : mockFinancialData.revenueByPlan
+                      ).map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(value: number) => `GHS ${value.toLocaleString()}`} />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="mt-4 space-y-2">
+                  {(revenueBreakdownView === "region" 
+                    ? mockFinancialData.revenueByRegion 
+                    : revenueBreakdownView === "schoolType"
+                    ? mockFinancialData.revenueBySchoolType
+                    : mockFinancialData.revenueByPlan
+                  ).map((item, index) => (
+                    <div key={index} className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-3 h-3 rounded-full" 
+                          style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                        />
+                        <span className="text-muted-foreground">
+                          {'region' in item ? item.region : 'type' in item ? item.type : item.plan}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-medium">GHS {item.revenue.toLocaleString()}</span>
+                        <span className="text-xs text-muted-foreground ml-2">
+                          ({item.schools || item.subscribers} {'schools' in item ? 'schools' : 'subs'})
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Most Popular Plans</CardTitle>
+                <CardDescription>Plan adoption and growth metrics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={mockFinancialData.planPopularity}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="plan" />
+                    <YAxis yAxisId="left" orientation="left" stroke="hsl(var(--primary))" />
+                    <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--secondary))" />
+                    <Tooltip />
+                    <Legend />
+                    <Bar yAxisId="left" dataKey="subscribers" fill="hsl(var(--primary))" name="Subscribers" />
+                    <Bar yAxisId="right" dataKey="totalRevenue" fill="hsl(var(--secondary))" name="Revenue (GHS)" />
+                  </BarChart>
+                </ResponsiveContainer>
+                <div className="mt-4 space-y-3">
+                  {mockFinancialData.planPopularity.map((plan, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                      <div>
+                        <p className="font-medium">{plan.plan}</p>
+                        <p className="text-sm text-muted-foreground">{plan.subscribers} subscribers</p>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant={plan.growth.startsWith('+') ? "default" : "destructive"}>
+                          {plan.growth}
+                        </Badge>
+                        <p className="text-xs text-muted-foreground mt-1">Growth</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Renewal Rate Analysis</CardTitle>
+              <CardDescription>Track subscription renewal performance by plan</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium">Overall Renewal Rate</span>
+                  <span className="text-2xl font-bold text-primary">{mockFinancialData.renewalRates.overall}%</span>
+                </div>
+                <div className="w-full bg-muted rounded-full h-3">
+                  <div 
+                    className="bg-primary h-3 rounded-full transition-all duration-500" 
+                    style={{ width: `${mockFinancialData.renewalRates.overall}%` }}
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                {mockFinancialData.renewalRates.byPlan.map((plan, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="font-medium">{plan.plan}</span>
+                        <span className="text-sm text-muted-foreground ml-2">
+                          ({plan.renewed}/{plan.total} renewed)
+                        </span>
+                      </div>
+                      <span className="text-lg font-semibold">{plan.rate}%</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className="h-2 rounded-full transition-all duration-500" 
+                        style={{ 
+                          width: `${plan.rate}%`,
+                          backgroundColor: plan.rate >= 90 ? 'hsl(var(--primary))' : plan.rate >= 80 ? 'hsl(var(--secondary))' : 'hsl(var(--destructive))'
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
