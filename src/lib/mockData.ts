@@ -62,11 +62,28 @@ export interface SupportTicket {
 }
 
 export interface DashboardKPIs {
+  // Platform Adoption & Growth
   totalSchools: number;
+  activeSchools: number;
   activeTeachers: number;
+  activeTeachersPercentage: number;
   activeStudents: number;
-  aiItemsThisWeek: number;
-  avgQuizScore: number;
+  activeStudentsPercentage: number;
+  newSignups: number;
+  
+  // Business & Financial Health
+  totalRevenue: number;
+  activeSubscriptions: number;
+  arpu: number;
+  churnRate: number;
+  
+  // Impact & Social Value
+  teacherHoursSaved: number;
+  atRiskLearnersSupported: number;
+  districtsReached: number;
+  totalDistricts: number;
+  
+  // System metrics
   uptime: number;
   openTickets: number;
 }
@@ -270,13 +287,30 @@ export const mockSupportTickets: SupportTicket[] = [
 
 // Mock Dashboard KPIs
 export const mockDashboardKPIs: DashboardKPIs = {
-  totalSchools: 247,
-  activeTeachers: 1834,
-  activeStudents: 45620,
-  aiItemsThisWeek: 1247,
-  avgQuizScore: 78.3,
-  uptime: 99.7,
-  openTickets: 23
+  // Platform Adoption & Growth
+  totalSchools: 1000,
+  activeSchools: 50,
+  activeTeachers: 1247,
+  activeTeachersPercentage: 20,
+  activeStudents: 15834,
+  activeStudentsPercentage: 20,
+  newSignups: 100,
+  
+  // Business & Financial Health
+  totalRevenue: 1000,
+  activeSubscriptions: 1000,
+  arpu: 1.0,
+  churnRate: 5.2,
+  
+  // Impact & Social Value
+  teacherHoursSaved: 12450,
+  atRiskLearnersSupported: 3250,
+  districtsReached: 110,
+  totalDistricts: 274,
+  
+  // System metrics
+  uptime: 99.8,
+  openTickets: 12
 };
 
 // Helper functions for filtering and searching

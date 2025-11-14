@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
 import { 
   Users, 
   GraduationCap, 
@@ -11,7 +12,14 @@ import {
   Plus,
   FileCheck,
   Bot,
-  CreditCard
+  CreditCard,
+  School,
+  UserPlus,
+  DollarSign,
+  Target,
+  Heart,
+  MapPin,
+  Sparkles
 } from 'lucide-react';
 import { mockDashboardKPIs } from '@/lib/mockData';
 import { useNavigate } from 'react-router-dom';
@@ -52,7 +60,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-8">
       {/* Page Header */}
       <div className="flex justify-between items-start">
         <div>
@@ -71,67 +79,220 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="kpi-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Schools
-            </CardTitle>
-            <Users className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{kpis.totalSchools}</div>
-            <p className="text-xs text-success mt-1">
-              +12 from last month
-            </p>
-          </CardContent>
-        </Card>
+      {/* Platform Adoption & Growth */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <TrendingUp className="h-5 w-5 text-primary" />
+          <h2 className="text-xl font-semibold text-foreground">Platform Adoption & Growth</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <Card className="hover-scale transition-all">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Total Schools
+              </CardTitle>
+              <School className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{kpis.totalSchools.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Onboarded to platform
+              </p>
+            </CardContent>
+          </Card>
 
-        <Card className="kpi-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Active Teachers
-            </CardTitle>
-            <GraduationCap className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{kpis.activeTeachers.toLocaleString()}</div>
-            <p className="text-xs text-success mt-1">
-              +156 from last month
-            </p>
-          </CardContent>
-        </Card>
+          <Card className="hover-scale transition-all">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Active Schools
+              </CardTitle>
+              <School className="h-4 w-4 text-success" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{kpis.activeSchools}</div>
+              <p className="text-xs text-success mt-1">
+                Currently active
+              </p>
+            </CardContent>
+          </Card>
 
-        <Card className="kpi-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Active Students
-            </CardTitle>
-            <BookOpen className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{kpis.activeStudents.toLocaleString()}</div>
-            <p className="text-xs text-success mt-1">
-              +2,341 from last month
-            </p>
-          </CardContent>
-        </Card>
+          <Card className="hover-scale transition-all">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Active Teachers
+              </CardTitle>
+              <GraduationCap className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{kpis.activeTeachersPercentage}%</div>
+              <Progress value={kpis.activeTeachersPercentage} className="mt-2" />
+              <p className="text-xs text-muted-foreground mt-1">
+                {kpis.activeTeachers.toLocaleString()} teachers
+              </p>
+            </CardContent>
+          </Card>
 
-        <Card className="kpi-card">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              System Uptime
-            </CardTitle>
-            <Clock className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{kpis.uptime}%</div>
-            <p className="text-xs text-success mt-1">
-              Above SLA target
-            </p>
-          </CardContent>
-        </Card>
+          <Card className="hover-scale transition-all">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Active Learners
+              </CardTitle>
+              <BookOpen className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{kpis.activeStudentsPercentage}%</div>
+              <Progress value={kpis.activeStudentsPercentage} className="mt-2" />
+              <p className="text-xs text-muted-foreground mt-1">
+                {kpis.activeStudents.toLocaleString()} students
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover-scale transition-all">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                New Sign-ups
+              </CardTitle>
+              <UserPlus className="h-4 w-4 text-success" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{kpis.newSignups}</div>
+              <p className="text-xs text-success mt-1">
+                This month
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Business & Financial Health */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <DollarSign className="h-5 w-5 text-success" />
+          <h2 className="text-xl font-semibold text-foreground">Business & Financial Health</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="hover-scale transition-all border-success/20">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Total Revenue
+              </CardTitle>
+              <DollarSign className="h-4 w-4 text-success" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">${kpis.totalRevenue.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Per year
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover-scale transition-all">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Active Subscriptions
+              </CardTitle>
+              <CreditCard className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{kpis.activeSubscriptions.toLocaleString()}</div>
+              <p className="text-xs text-success mt-1">
+                Schools subscribed
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover-scale transition-all">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                ARPU
+              </CardTitle>
+              <Target className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">${kpis.arpu.toFixed(2)}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Avg per school/month
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover-scale transition-all">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Churn Rate
+              </CardTitle>
+              <AlertTriangle className="h-4 w-4 text-warning" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{kpis.churnRate}%</div>
+              <Progress value={kpis.churnRate} className="mt-2" />
+              <p className="text-xs text-muted-foreground mt-1">
+                Last 30 days
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Impact & Social Value */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Heart className="h-5 w-5 text-destructive" />
+          <h2 className="text-xl font-semibold text-foreground">Impact & Social Value</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card className="hover-scale transition-all border-primary/20">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Teacher Hours Saved
+              </CardTitle>
+              <Sparkles className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{kpis.teacherHoursSaved.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Cumulative across all schools
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover-scale transition-all border-success/20">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                At-Risk Learners
+              </CardTitle>
+              <Heart className="h-4 w-4 text-destructive" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">{kpis.atRiskLearnersSupported.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Identified & supported via AI
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="hover-scale transition-all">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Geographic Reach
+              </CardTitle>
+              <MapPin className="h-4 w-4 text-primary" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-foreground">
+                {kpis.districtsReached}/{kpis.totalDistricts}
+              </div>
+              <Progress 
+                value={(kpis.districtsReached / kpis.totalDistricts) * 100} 
+                className="mt-2" 
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Districts covered
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* Quick Actions */}
