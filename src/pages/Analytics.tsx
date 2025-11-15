@@ -67,6 +67,9 @@ export default function Analytics() {
   const [learningGainsSubjectFilter, setLearningGainsSubjectFilter] = useState('all');
   const [learningGainsSchoolLevelFilter, setLearningGainsSchoolLevelFilter] = useState('all');
   const [ageUserTypeFilter, setAgeUserTypeFilter] = useState<'students' | 'teachers'>('students');
+  const [satisfactionSchoolFilter, setSatisfactionSchoolFilter] = useState('all');
+  const [satisfactionDistrictFilter, setSatisfactionDistrictFilter] = useState('all');
+  const [satisfactionRegionFilter, setSatisfactionRegionFilter] = useState('all');
 
   // MOCK DATA - Platform Analytics
   const demographicsData = {
@@ -1309,6 +1312,56 @@ export default function Analytics() {
                   <CardDescription>How teachers feel about the platform</CardDescription>
                 </CardHeader>
                 <CardContent>
+                  {/* Filters */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Region</label>
+                      <Select value={satisfactionRegionFilter} onValueChange={setSatisfactionRegionFilter}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select region" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Regions</SelectItem>
+                          <SelectItem value="accra">Greater Accra</SelectItem>
+                          <SelectItem value="ashanti">Ashanti</SelectItem>
+                          <SelectItem value="northern">Northern</SelectItem>
+                          <SelectItem value="western">Western</SelectItem>
+                          <SelectItem value="eastern">Eastern</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">District</label>
+                      <Select value={satisfactionDistrictFilter} onValueChange={setSatisfactionDistrictFilter}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select district" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Districts</SelectItem>
+                          <SelectItem value="accra-metro">Accra Metro</SelectItem>
+                          <SelectItem value="tema">Tema</SelectItem>
+                          <SelectItem value="kumasi">Kumasi</SelectItem>
+                          <SelectItem value="tamale">Tamale</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">School</label>
+                      <Select value={satisfactionSchoolFilter} onValueChange={setSatisfactionSchoolFilter}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select school" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Schools</SelectItem>
+                          <SelectItem value="accra-academy">Accra Academy</SelectItem>
+                          <SelectItem value="mfantsipim">Mfantsipim School</SelectItem>
+                          <SelectItem value="wesley-girls">Wesley Girls' High School</SelectItem>
+                          <SelectItem value="prempeh">Prempeh College</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="p-4 border rounded-lg">
                       <div className="text-sm text-muted-foreground mb-2">CSAT Score</div>
