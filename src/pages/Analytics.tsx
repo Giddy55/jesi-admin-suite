@@ -829,7 +829,7 @@ export default function Analytics() {
                           </div>
                         </div>
                         <div className="text-3xl font-bold">{teacherUsageData.totalTeachers.toLocaleString()}</div>
-                        <div className="text-sm text-muted-foreground mt-1">Number</div>
+                        <div className="text-sm text-muted-foreground mt-1">Total Number of Users</div>
                       </CardContent>
                     </Card>
 
@@ -841,7 +841,7 @@ export default function Analytics() {
                           </div>
                         </div>
                         <div className="text-3xl font-bold">{teacherUsageData.activeTeachers.toLocaleString()}</div>
-                        <div className="text-sm text-muted-foreground mt-1">Active</div>
+                        <div className="text-sm text-muted-foreground mt-1">Active Users</div>
                       </CardContent>
                     </Card>
 
@@ -853,7 +853,7 @@ export default function Analytics() {
                           </div>
                         </div>
                         <div className="text-3xl font-bold">{teacherUsageData.plannerUsers.toLocaleString()}</div>
-                        <div className="text-sm text-muted-foreground mt-1">Planner</div>
+                        <div className="text-sm text-muted-foreground mt-1">Planner Users</div>
                       </CardContent>
                     </Card>
 
@@ -865,7 +865,7 @@ export default function Analytics() {
                           </div>
                         </div>
                         <div className="text-3xl font-bold">{teacherUsageData.testCreators.toLocaleString()}</div>
-                        <div className="text-sm text-muted-foreground mt-1">Test</div>
+                        <div className="text-sm text-muted-foreground mt-1">Test Creators</div>
                       </CardContent>
                     </Card>
 
@@ -877,7 +877,7 @@ export default function Analytics() {
                           </div>
                         </div>
                         <div className="text-3xl font-bold">{teacherUsageData.aiUsers.toLocaleString()}</div>
-                        <div className="text-sm text-muted-foreground mt-1">AI</div>
+                        <div className="text-sm text-muted-foreground mt-1">AI Users</div>
                       </CardContent>
                     </Card>
                   </div>
