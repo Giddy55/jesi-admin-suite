@@ -102,6 +102,9 @@ const mockFinancialData = {
     { month: "Jun", revenue: 42000, subscriptions: 62, school: "Accra Senior High School" }
   ],
   totalRevenue: 200000,
+  schoolSubRevenue: 125000,
+  learnerRevenue: 45000,
+  teacherRevenue: 30000,
   activeSubscriptions: 62,
   churnRate: 5.2,
   averageRevenuePerUser: 420,
@@ -934,41 +937,56 @@ export default function Billing() {
         </TabsContent>
 
         <TabsContent value="reports" className="space-y-6">
-          <div className="grid gap-4 md:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <Card className="relative overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 to-background">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16" />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Total Revenue</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-primary">GHS {mockFinancialData.totalRevenue.toLocaleString()}</div>
-                <p className="text-xs text-muted-foreground">+12% from last month</p>
+              <CardContent className="relative z-10">
+                <div className="text-3xl font-bold text-primary mb-1">GHS {mockFinancialData.totalRevenue.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <span className="text-green-500">↑ 12%</span> from last month
+                </p>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Subscriptions</CardTitle>
+            
+            <Card className="relative overflow-hidden border-secondary/20 bg-gradient-to-br from-secondary/5 to-background">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full -mr-16 -mt-16" />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                <CardTitle className="text-sm font-medium text-muted-foreground">School Sub Revenue</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-secondary">{mockFinancialData.activeSubscriptions}</div>
-                <p className="text-xs text-muted-foreground">+8 from last month</p>
+              <CardContent className="relative z-10">
+                <div className="text-3xl font-bold text-secondary mb-1">GHS {mockFinancialData.schoolSubRevenue.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <span className="text-green-500">↑ 15%</span> from last month
+                </p>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Avg Revenue/User</CardTitle>
+
+            <Card className="relative overflow-hidden border-accent/20 bg-gradient-to-br from-accent/5 to-background">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full -mr-16 -mt-16" />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Learner Revenue</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-accent">GHS {mockFinancialData.averageRevenuePerUser}</div>
-                <p className="text-xs text-muted-foreground">+5% from last month</p>
+              <CardContent className="relative z-10">
+                <div className="text-3xl font-bold text-accent mb-1">GHS {mockFinancialData.learnerRevenue.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <span className="text-green-500">↑ 8%</span> from last month
+                </p>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Churn Rate</CardTitle>
+
+            <Card className="relative overflow-hidden border-muted/20 bg-gradient-to-br from-muted/5 to-background">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-muted/10 rounded-full -mr-16 -mt-16" />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 relative z-10">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Teacher Revenue</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-destructive">{mockFinancialData.churnRate}%</div>
-                <p className="text-xs text-muted-foreground">-1.2% from last month</p>
+              <CardContent className="relative z-10">
+                <div className="text-3xl font-bold text-foreground mb-1">GHS {mockFinancialData.teacherRevenue.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <span className="text-green-500">↑ 10%</span> from last month
+                </p>
               </CardContent>
             </Card>
           </div>
