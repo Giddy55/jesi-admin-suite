@@ -145,12 +145,14 @@ export default function Analytics() {
   const [teacherSchoolFilter, setTeacherSchoolFilter] = useState('all');
   const [teacherSearchQuery, setTeacherSearchQuery] = useState('');
 
+  // Teacher efficiency filter
+  const [efficiencySchoolFilter, setEfficiencySchoolFilter] = useState('all');
+
   const teacherEfficiencyData = {
-    planningTimeBefore: 120,
-    planningTimeAfter: 35,
-    lessonsPerHour: 2,
-    assessmentsPerHour: 2,
-    hoursSavedPerMonth: 28
+    avgHoursSavedLessonPlanning: 12.5,
+    avgHoursSavedAssessment: 8.3,
+    avgHoursSavedGrading: 6.7,
+    avgHoursSavedLearnerMonitoring: 5.2
   };
 
   const learnerEngagementData = {
@@ -891,39 +893,72 @@ export default function Analytics() {
                     <Zap className="h-5 w-5" />
                     Teacher Efficiency
                   </CardTitle>
-                  <CardDescription>Time savings and productivity improvements</CardDescription>
+                  <CardDescription>Average hours saved per school</CardDescription>
+                  <div className="mt-4">
+                    <Select value={efficiencySchoolFilter} onValueChange={setEfficiencySchoolFilter}>
+                      <SelectTrigger className="w-[200px]">
+                        <SelectValue placeholder="Filter by school" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Schools</SelectItem>
+                        <SelectItem value="accra-academy">Accra Academy</SelectItem>
+                        <SelectItem value="mfantsipim">Mfantsipim School</SelectItem>
+                        <SelectItem value="achimota">Achimota School</SelectItem>
+                        <SelectItem value="prempeh">Prempeh College</SelectItem>
+                        <SelectItem value="wesley-girls">Wesley Girls' High School</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="text-sm font-medium mb-4">Planning Time Comparison</h4>
-                      <ResponsiveContainer width="100%" height={200}>
-                        <BarChart data={[
-                          { phase: 'Before Jesi', minutes: teacherEfficiencyData.planningTimeBefore },
-                          { phase: 'Using Jesi', minutes: teacherEfficiencyData.planningTimeAfter }
-                        ]} layout="vertical">
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis type="number" />
-                          <YAxis dataKey="phase" type="category" width={100} />
-                          <Tooltip />
-                          <Bar dataKey="minutes" fill="#10B981" name="Minutes" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="p-4 border rounded-lg">
-                        <div className="text-sm text-muted-foreground">Lesson Plan Generated per Hour</div>
-                        <div className="text-2xl font-bold">{teacherEfficiencyData.lessonsPerHour}</div>
-                      </div>
-                      <div className="p-4 border rounded-lg">
-                        <div className="text-sm text-muted-foreground">Assessments Generated per Hour</div>
-                        <div className="text-2xl font-bold">{teacherEfficiencyData.assessmentsPerHour}</div>
-                      </div>
-                      <div className="p-4 border rounded-lg bg-green-50 dark:bg-green-950">
-                        <div className="text-sm text-muted-foreground">Average Hours Saved per Week</div>
-                        <div className="text-2xl font-bold text-green-600">{teacherEfficiencyData.hoursSavedPerMonth}</div>
-                      </div>
-                    </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="p-3 bg-primary/10 rounded-lg">
+                            <FileText className="h-6 w-6 text-primary" />
+                          </div>
+                        </div>
+                        <div className="text-3xl font-bold">{teacherEfficiencyData.avgHoursSavedLessonPlanning}</div>
+                        <div className="text-sm text-muted-foreground mt-1">Avg Hours Saved in Lesson Planning</div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2 border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-transparent">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="p-3 bg-blue-500/10 rounded-lg">
+                            <ClipboardCheck className="h-6 w-6 text-blue-500" />
+                          </div>
+                        </div>
+                        <div className="text-3xl font-bold">{teacherEfficiencyData.avgHoursSavedAssessment}</div>
+                        <div className="text-sm text-muted-foreground mt-1">Avg Hours Saved in Assessment</div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2 border-green-500/20 bg-gradient-to-br from-green-500/5 to-transparent">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="p-3 bg-green-500/10 rounded-lg">
+                            <BookOpen className="h-6 w-6 text-green-500" />
+                          </div>
+                        </div>
+                        <div className="text-3xl font-bold">{teacherEfficiencyData.avgHoursSavedGrading}</div>
+                        <div className="text-sm text-muted-foreground mt-1">Avg Hours Saved in Grading</div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2 border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-transparent">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="p-3 bg-purple-500/10 rounded-lg">
+                            <Users className="h-6 w-6 text-purple-500" />
+                          </div>
+                        </div>
+                        <div className="text-3xl font-bold">{teacherEfficiencyData.avgHoursSavedLearnerMonitoring}</div>
+                        <div className="text-sm text-muted-foreground mt-1">Avg Hours Saved in Learner Monitoring</div>
+                      </CardContent>
+                    </Card>
                   </div>
                 </CardContent>
               </Card>
