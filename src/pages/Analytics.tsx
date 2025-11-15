@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import type { DateRange } from 'react-day-picker';
 import { 
@@ -43,7 +44,11 @@ import {
   BarChart3,
   MonitorSmartphone,
   CheckCircle,
-  TrendingDown
+  TrendingDown,
+  Search,
+  FileText,
+  ClipboardCheck,
+  Sparkles
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -127,11 +132,18 @@ export default function Analytics() {
 
   // MOCK DATA - Teacher Analytics
   const teacherUsageData = {
-    weeklyActive: 87,
-    lessonPlansPerWeek: 4,
-    assessmentsPerWeek: 3,
-    aiRecommendationsPerWeek: 13
+    totalTeachers: 8934,
+    activeTeachers: 7772,
+    plannerUsers: 6542,
+    testCreators: 5123,
+    aiUsers: 7201
   };
+  
+  // Teacher filters
+  const [teacherRegionFilter, setTeacherRegionFilter] = useState('all');
+  const [teacherDistrictFilter, setTeacherDistrictFilter] = useState('all');
+  const [teacherSchoolFilter, setTeacherSchoolFilter] = useState('all');
+  const [teacherSearchQuery, setTeacherSearchQuery] = useState('');
 
   const teacherEfficiencyData = {
     planningTimeBefore: 120,
@@ -758,24 +770,116 @@ export default function Analytics() {
                   </CardTitle>
                   <CardDescription>How teachers are using Jesi AI lesson planner</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-6">
+                  {/* Filters */}
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">Weekly Active Teachers</div>
-                      <div className="text-3xl font-bold text-primary">{teacherUsageData.weeklyActive}%</div>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search teachers..."
+                        value={teacherSearchQuery}
+                        onChange={(e) => setTeacherSearchQuery(e.target.value)}
+                        className="pl-9"
+                      />
                     </div>
-                    <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">Lesson Plan Generated per Week</div>
-                      <div className="text-3xl font-bold">{teacherUsageData.lessonPlansPerWeek}</div>
-                    </div>
-                    <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">Assessment Generated per Week</div>
-                      <div className="text-3xl font-bold">{teacherUsageData.assessmentsPerWeek}</div>
-                    </div>
-                    <div className="p-4 bg-muted/30 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">AI Advice Accessed</div>
-                      <div className="text-3xl font-bold">{teacherUsageData.aiRecommendationsPerWeek}</div>
-                    </div>
+                    <Select value={teacherRegionFilter} onValueChange={setTeacherRegionFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Region" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Regions</SelectItem>
+                        <SelectItem value="greater-accra">Greater Accra</SelectItem>
+                        <SelectItem value="ashanti">Ashanti</SelectItem>
+                        <SelectItem value="northern">Northern</SelectItem>
+                        <SelectItem value="western">Western</SelectItem>
+                        <SelectItem value="eastern">Eastern</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={teacherDistrictFilter} onValueChange={setTeacherDistrictFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="District" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Districts</SelectItem>
+                        <SelectItem value="accra-metro">Accra Metropolitan</SelectItem>
+                        <SelectItem value="kumasi-metro">Kumasi Metropolitan</SelectItem>
+                        <SelectItem value="tema-metro">Tema Metropolitan</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select value={teacherSchoolFilter} onValueChange={setTeacherSchoolFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="School" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Schools</SelectItem>
+                        <SelectItem value="school-1">Achimota School</SelectItem>
+                        <SelectItem value="school-2">Wesley Girls High School</SelectItem>
+                        <SelectItem value="school-3">Prempeh College</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Metrics */}
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <Card className="border-2">
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="p-2 bg-primary/10 rounded-lg">
+                            <Users className="h-5 w-5 text-primary" />
+                          </div>
+                        </div>
+                        <div className="text-3xl font-bold">{teacherUsageData.totalTeachers.toLocaleString()}</div>
+                        <div className="text-sm text-muted-foreground mt-1">Number</div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2">
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="p-2 bg-success/10 rounded-lg">
+                            <UserCheck className="h-5 w-5 text-success" />
+                          </div>
+                        </div>
+                        <div className="text-3xl font-bold">{teacherUsageData.activeTeachers.toLocaleString()}</div>
+                        <div className="text-sm text-muted-foreground mt-1">Active</div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2">
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="p-2 bg-blue-500/10 rounded-lg">
+                            <FileText className="h-5 w-5 text-blue-500" />
+                          </div>
+                        </div>
+                        <div className="text-3xl font-bold">{teacherUsageData.plannerUsers.toLocaleString()}</div>
+                        <div className="text-sm text-muted-foreground mt-1">Planner</div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2">
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="p-2 bg-orange-500/10 rounded-lg">
+                            <ClipboardCheck className="h-5 w-5 text-orange-500" />
+                          </div>
+                        </div>
+                        <div className="text-3xl font-bold">{teacherUsageData.testCreators.toLocaleString()}</div>
+                        <div className="text-sm text-muted-foreground mt-1">Test</div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-2">
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="p-2 bg-purple-500/10 rounded-lg">
+                            <Sparkles className="h-5 w-5 text-purple-500" />
+                          </div>
+                        </div>
+                        <div className="text-3xl font-bold">{teacherUsageData.aiUsers.toLocaleString()}</div>
+                        <div className="text-sm text-muted-foreground mt-1">AI</div>
+                      </CardContent>
+                    </Card>
                   </div>
                 </CardContent>
               </Card>
