@@ -11,7 +11,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { DateRange } from "react-day-picker";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Download, Edit, Eye, Filter, Plus, Send, Mail } from "lucide-react";
+import { CalendarIcon, Download, Filter, Plus, Send, Mail, MoreVertical, Eye, Edit } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from "recharts";
@@ -656,32 +657,26 @@ export default function Billing() {
                       <TableCell>{sub.teachers}/{sub.students}</TableCell>
                       <TableCell>{sub.nextBilling}</TableCell>
                       <TableCell>
-                        <div className="flex gap-1">
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => handleManageSubscription(sub.id, 'allocate')}
-                            title="Allocate/Reassign License"
-                          >
-                            <Plus className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => handleManageSubscription(sub.id, 'suspend')}
-                            title="Suspend/Revoke Access"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => handleManageSubscription(sub.id, 'upgrade')}
-                            title="Upgrade/Downgrade Plan"
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-56">
+                            <DropdownMenuLabel>Manage User Licenses</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleManageSubscription(sub.id, 'allocate')}>
+                              Allocate or Reassign Licenses
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleManageSubscription(sub.id, 'suspend')}>
+                              Suspend or Revoke Access
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleManageSubscription(sub.id, 'upgrade')}>
+                              Upgrade or Downgrade Plan
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </TableCell>
                     </TableRow>
                   ))}
