@@ -67,6 +67,9 @@ export default function Analytics() {
   const [learningGainsSubjectFilter, setLearningGainsSubjectFilter] = useState('all');
   const [learningGainsSchoolLevelFilter, setLearningGainsSchoolLevelFilter] = useState('all');
   const [ageUserTypeFilter, setAgeUserTypeFilter] = useState<'students' | 'teachers'>('students');
+  const [genderUserTypeFilter, setGenderUserTypeFilter] = useState<'students' | 'teachers'>('students');
+  const [disabilityUserTypeFilter, setDisabilityUserTypeFilter] = useState<'students' | 'teachers'>('students');
+  const [ruralUrbanFilter, setRuralUrbanFilter] = useState<'students' | 'teachers' | 'schools'>('students');
   const [satisfactionSchoolFilter, setSatisfactionSchoolFilter] = useState('all');
   const [satisfactionDistrictFilter, setSatisfactionDistrictFilter] = useState('all');
   const [satisfactionRegionFilter, setSatisfactionRegionFilter] = useState('all');
@@ -93,10 +96,45 @@ export default function Analytics() {
         { range: '51-60', count: 1165 }
       ]
     },
-    byGender: [
-      { gender: 'Male', count: 68900 },
-      { gender: 'Female', count: 67889 }
-    ]
+    byGender: {
+      students: [
+        { gender: 'Male', count: 70345 },
+        { gender: 'Female', count: 66175 }
+      ],
+      teachers: [
+        { gender: 'Male', count: 4234 },
+        { gender: 'Female', count: 5366 }
+      ]
+    },
+    byDisability: {
+      students: [
+        { status: 'No Disability', count: 128450 },
+        { status: 'Visual Impairment', count: 3210 },
+        { status: 'Hearing Impairment', count: 2145 },
+        { status: 'Physical Disability', count: 1875 },
+        { status: 'Learning Disability', count: 840 }
+      ],
+      teachers: [
+        { status: 'No Disability', count: 9145 },
+        { status: 'Visual Impairment', count: 234 },
+        { status: 'Physical Disability', count: 178 },
+        { status: 'Other', count: 43 }
+      ]
+    },
+    ruralUrban: {
+      students: [
+        { type: 'Urban', count: 82340 },
+        { type: 'Rural', count: 54180 }
+      ],
+      teachers: [
+        { type: 'Urban', count: 5876 },
+        { type: 'Rural', count: 3724 }
+      ],
+      schools: [
+        { type: 'Urban', count: 678 },
+        { type: 'Rural', count: 426 }
+      ]
+    }
   };
 
   const userGrowthData = [
@@ -481,6 +519,8 @@ export default function Analytics() {
                   <TabsTrigger value="region">By Region</TabsTrigger>
                   <TabsTrigger value="age">By Age</TabsTrigger>
                   <TabsTrigger value="gender">By Gender</TabsTrigger>
+                  <TabsTrigger value="disability">Disability</TabsTrigger>
+                  <TabsTrigger value="ruralurban">Rural/Urban</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="region">
@@ -521,23 +561,14 @@ export default function Analytics() {
                           Students Age Distribution
                         </h4>
                         <ResponsiveContainer width="100%" height={300}>
-                          <PieChart>
-                            <Pie 
-                              data={demographicsData.byAge.students} 
-                              dataKey="count" 
-                              nameKey="range" 
-                              cx="50%" 
-                              cy="50%" 
-                              outerRadius={100} 
-                              label
-                            >
-                              {demographicsData.byAge.students.map((entry, index) => (
-                                <Cell key={`cell-students-${index}`} fill={COLORS[index % COLORS.length]} />
-                              ))}
-                            </Pie>
+                          <BarChart data={demographicsData.byAge.students}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="range" />
+                            <YAxis />
                             <Tooltip />
                             <Legend />
-                          </PieChart>
+                            <Bar dataKey="count" fill="#3B82F6" name="Students" />
+                          </BarChart>
                         </ResponsiveContainer>
                       </div>
                     ) : (
@@ -562,17 +593,183 @@ export default function Analytics() {
                 </TabsContent>
 
                 <TabsContent value="gender">
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie data={demographicsData.byGender} dataKey="count" nameKey="gender" cx="50%" cy="50%" outerRadius={100} label>
-                        {demographicsData.byGender.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <div className="space-y-4">
+                    {/* Filter for Students/Teachers */}
+                    <div className="flex items-center gap-2">
+                      <Select value={genderUserTypeFilter} onValueChange={(value: 'students' | 'teachers') => setGenderUserTypeFilter(value)}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="students">Students</SelectItem>
+                          <SelectItem value="teachers">Teachers</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Display based on filter */}
+                    {genderUserTypeFilter === 'students' ? (
+                      <div>
+                        <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          Students Gender Distribution
+                        </h4>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <BarChart data={demographicsData.byGender.students}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="gender" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="count" fill="#3B82F6" name="Students" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    ) : (
+                      <div>
+                        <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                          <GraduationCap className="h-4 w-4" />
+                          Teachers Gender Distribution
+                        </h4>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <BarChart data={demographicsData.byGender.teachers}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="gender" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="count" fill="#10B981" name="Teachers" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="disability">
+                  <div className="space-y-4">
+                    {/* Filter for Students/Teachers */}
+                    <div className="flex items-center gap-2">
+                      <Select value={disabilityUserTypeFilter} onValueChange={(value: 'students' | 'teachers') => setDisabilityUserTypeFilter(value)}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="students">Students</SelectItem>
+                          <SelectItem value="teachers">Teachers</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Display based on filter */}
+                    {disabilityUserTypeFilter === 'students' ? (
+                      <div>
+                        <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          Students Disability Status
+                        </h4>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <BarChart data={demographicsData.byDisability.students}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="status" angle={-45} textAnchor="end" height={100} />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="count" fill="#3B82F6" name="Students" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    ) : (
+                      <div>
+                        <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                          <GraduationCap className="h-4 w-4" />
+                          Teachers Disability Status
+                        </h4>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <BarChart data={demographicsData.byDisability.teachers}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="status" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="count" fill="#10B981" name="Teachers" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="ruralurban">
+                  <div className="space-y-4">
+                    {/* Filter for Students/Teachers/Schools */}
+                    <div className="flex items-center gap-2">
+                      <Select value={ruralUrbanFilter} onValueChange={(value: 'students' | 'teachers' | 'schools') => setRuralUrbanFilter(value)}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="students">Students</SelectItem>
+                          <SelectItem value="teachers">Teachers</SelectItem>
+                          <SelectItem value="schools">Schools</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Display based on filter */}
+                    {ruralUrbanFilter === 'students' ? (
+                      <div>
+                        <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          Students Rural/Urban Distribution
+                        </h4>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <BarChart data={demographicsData.ruralUrban.students}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="type" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="count" fill="#3B82F6" name="Students" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    ) : ruralUrbanFilter === 'teachers' ? (
+                      <div>
+                        <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                          <GraduationCap className="h-4 w-4" />
+                          Teachers Rural/Urban Distribution
+                        </h4>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <BarChart data={demographicsData.ruralUrban.teachers}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="type" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="count" fill="#10B981" name="Teachers" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    ) : (
+                      <div>
+                        <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
+                          <School className="h-4 w-4" />
+                          Schools Rural/Urban Distribution
+                        </h4>
+                        <ResponsiveContainer width="100%" height={300}>
+                          <BarChart data={demographicsData.ruralUrban.schools}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="type" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="count" fill="#F59E0B" name="Schools" />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    )}
+                  </div>
                 </TabsContent>
 
               </Tabs>
