@@ -73,6 +73,20 @@ export default function Analytics() {
   const [satisfactionSchoolFilter, setSatisfactionSchoolFilter] = useState('all');
   const [satisfactionDistrictFilter, setSatisfactionDistrictFilter] = useState('all');
   const [satisfactionRegionFilter, setSatisfactionRegionFilter] = useState('all');
+  
+  // Learner Engagement filters
+  const [engagementSearchSchool, setEngagementSearchSchool] = useState('');
+  const [engagementSchoolFilter, setEngagementSchoolFilter] = useState('all');
+  const [engagementClassFilter, setEngagementClassFilter] = useState('all');
+  const [engagementSubjectFilter, setEngagementSubjectFilter] = useState('all');
+  const [engagementWeekFilter, setEngagementWeekFilter] = useState('all');
+  
+  // Learner Impact filters
+  const [impactSearchSchool, setImpactSearchSchool] = useState('');
+  const [impactSchoolFilter, setImpactSchoolFilter] = useState('all');
+  const [impactClassFilter, setImpactClassFilter] = useState('all');
+  const [impactPeriodFilter, setImpactPeriodFilter] = useState<'month' | 'week'>('month');
+  const [impactSubjectFilter, setImpactSubjectFilter] = useState('all');
 
   // MOCK DATA - Platform Analytics
   const demographicsData = {
@@ -200,7 +214,22 @@ export default function Analytics() {
     attendanceBefore: 78,
     attendanceAfter: 92,
     engagementScore: 85,
-    learnerSatisfactionScore: 88
+    learnerSatisfactionScore: 88,
+    bySchool: [
+      { school: 'Accra International School', class: 'Grade 5A', subject: 'Mathematics', week: 'Week 1', engagement: 92 },
+      { school: 'Kumasi Central School', class: 'Grade 6B', subject: 'Science', week: 'Week 2', engagement: 88 },
+      { school: 'Cape Coast Academy', class: 'Grade 4C', subject: 'English', week: 'Week 1', engagement: 85 },
+      { school: 'Takoradi High School', class: 'Grade 5B', subject: 'Social Studies', week: 'Week 3', engagement: 90 },
+    ]
+  };
+
+  const learnerImpactData = {
+    bySchool: [
+      { school: 'Accra International School', class: 'Grade 5A', subject: 'Mathematics', period: 'January', avgScore: 78, learningGain: 12, atRisk: 8 },
+      { school: 'Kumasi Central School', class: 'Grade 6B', subject: 'Science', period: 'January', avgScore: 82, learningGain: 15, atRisk: 5 },
+      { school: 'Cape Coast Academy', class: 'Grade 4C', subject: 'English', period: 'February', avgScore: 75, learningGain: 10, atRisk: 12 },
+      { school: 'Takoradi High School', class: 'Grade 5B', subject: 'Social Studies', period: 'February', avgScore: 80, learningGain: 14, atRisk: 6 },
+    ]
   };
 
   const learningGainsData = {
@@ -1163,25 +1192,183 @@ export default function Analytics() {
                 </CardContent>
               </Card>
 
-              {/* Learner Engagement Impact */}
+              {/* Learner Engagement */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Activity className="h-5 w-5" />
-                    Learner Engagement Impact
+                    Learner Engagement
                   </CardTitle>
-                  <CardDescription>How Jesi AI impacts student engagement in class</CardDescription>
+                  <CardDescription>Track student engagement across schools, classes, and subjects</CardDescription>
+                  <div className="flex flex-col gap-4 mt-4">
+                    <div className="relative">
+                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search school..."
+                        value={engagementSearchSchool}
+                        onChange={(e) => setEngagementSearchSchool(e.target.value)}
+                        className="pl-8"
+                      />
+                    </div>
+                    <div className="flex flex-wrap gap-4">
+                      <Select value={engagementSchoolFilter} onValueChange={setEngagementSchoolFilter}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Filter by School" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Schools</SelectItem>
+                          <SelectItem value="accra-international">Accra International School</SelectItem>
+                          <SelectItem value="kumasi-central">Kumasi Central School</SelectItem>
+                          <SelectItem value="cape-coast-academy">Cape Coast Academy</SelectItem>
+                          <SelectItem value="takoradi-high">Takoradi High School</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Select value={engagementClassFilter} onValueChange={setEngagementClassFilter}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Filter by Class" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Classes</SelectItem>
+                          <SelectItem value="grade-4">Grade 4</SelectItem>
+                          <SelectItem value="grade-5">Grade 5</SelectItem>
+                          <SelectItem value="grade-6">Grade 6</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Select value={engagementSubjectFilter} onValueChange={setEngagementSubjectFilter}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Filter by Subject" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Subjects</SelectItem>
+                          <SelectItem value="mathematics">Mathematics</SelectItem>
+                          <SelectItem value="english">English</SelectItem>
+                          <SelectItem value="science">Science</SelectItem>
+                          <SelectItem value="social-studies">Social Studies</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Select value={engagementWeekFilter} onValueChange={setEngagementWeekFilter}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Filter by Week" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Weeks</SelectItem>
+                          <SelectItem value="week-1">Week 1</SelectItem>
+                          <SelectItem value="week-2">Week 2</SelectItem>
+                          <SelectItem value="week-3">Week 3</SelectItem>
+                          <SelectItem value="week-4">Week 4</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">Learner Satisfaction Score</div>
-                      <div className="text-3xl font-bold text-green-600">{learnerEngagementData.learnerSatisfactionScore}%</div>
+                  <div className="space-y-4">
+                    {learnerEngagementData.bySchool.map((item, index) => (
+                      <div key={index} className="p-4 border rounded-lg">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <div className="font-medium">{item.school}</div>
+                            <div className="text-sm text-muted-foreground">{item.class} • {item.subject} • {item.week}</div>
+                          </div>
+                          <Badge variant="secondary">{item.engagement}% Engaged</Badge>
+                        </div>
+                        <Progress value={item.engagement} className="h-2" />
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Learner Impact */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="h-5 w-5" />
+                    Learner Impact
+                  </CardTitle>
+                  <CardDescription>Monitor student performance, learning gains, and at-risk learners</CardDescription>
+                  <div className="flex flex-col gap-4 mt-4">
+                    <div className="relative">
+                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        placeholder="Search school..."
+                        value={impactSearchSchool}
+                        onChange={(e) => setImpactSearchSchool(e.target.value)}
+                        className="pl-8"
+                      />
                     </div>
-                    <div className="p-4 bg-primary/10 rounded-lg">
-                      <div className="text-sm text-muted-foreground mb-2">Average Class Engagement Rate</div>
-                      <div className="text-3xl font-bold text-primary">{learnerEngagementData.engagementScore}%</div>
+                    <div className="flex flex-wrap gap-4">
+                      <Select value={impactSchoolFilter} onValueChange={setImpactSchoolFilter}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Filter by School" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Schools</SelectItem>
+                          <SelectItem value="accra-international">Accra International School</SelectItem>
+                          <SelectItem value="kumasi-central">Kumasi Central School</SelectItem>
+                          <SelectItem value="cape-coast-academy">Cape Coast Academy</SelectItem>
+                          <SelectItem value="takoradi-high">Takoradi High School</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Select value={impactClassFilter} onValueChange={setImpactClassFilter}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Filter by Class" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Classes</SelectItem>
+                          <SelectItem value="grade-4">Grade 4</SelectItem>
+                          <SelectItem value="grade-5">Grade 5</SelectItem>
+                          <SelectItem value="grade-6">Grade 6</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Select value={impactPeriodFilter} onValueChange={(value: 'month' | 'week') => setImpactPeriodFilter(value)}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Filter by Period" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="month">Month</SelectItem>
+                          <SelectItem value="week">Week</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Select value={impactSubjectFilter} onValueChange={setImpactSubjectFilter}>
+                        <SelectTrigger className="w-[200px]">
+                          <SelectValue placeholder="Filter by Subject" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Subjects</SelectItem>
+                          <SelectItem value="mathematics">Mathematics</SelectItem>
+                          <SelectItem value="english">English</SelectItem>
+                          <SelectItem value="science">Science</SelectItem>
+                          <SelectItem value="social-studies">Social Studies</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {learnerImpactData.bySchool.map((item, index) => (
+                      <div key={index} className="p-4 border rounded-lg">
+                        <div className="mb-3">
+                          <div className="font-medium">{item.school}</div>
+                          <div className="text-sm text-muted-foreground">{item.class} • {item.subject} • {item.period}</div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                            <div className="text-xs text-muted-foreground mb-1">Average Score</div>
+                            <div className="text-2xl font-bold text-blue-600">{item.avgScore}%</div>
+                          </div>
+                          <div className="p-3 bg-green-50 dark:bg-green-950 rounded-lg">
+                            <div className="text-xs text-muted-foreground mb-1">Learning Gain</div>
+                            <div className="text-2xl font-bold text-green-600">+{item.learningGain}%</div>
+                          </div>
+                          <div className="p-3 bg-orange-50 dark:bg-orange-950 rounded-lg">
+                            <div className="text-xs text-muted-foreground mb-1">At Risk (below 20%)</div>
+                            <div className="text-2xl font-bold text-orange-600">{item.atRisk}</div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
