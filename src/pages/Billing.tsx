@@ -22,6 +22,7 @@ const mockSubscriptions = [
   {
     id: "SUB001",
     schoolName: "Accra Senior High School",
+    type: "school",
     plan: "Premium",
     price: 500,
     status: "active",
@@ -34,6 +35,7 @@ const mockSubscriptions = [
   {
     id: "SUB002",
     schoolName: "Kumasi Technical Institute",
+    type: "school",
     plan: "Standard",
     price: 300,
     status: "trial",
@@ -46,6 +48,7 @@ const mockSubscriptions = [
   {
     id: "SUB003",
     schoolName: "Cape Coast University",
+    type: "school",
     plan: "Enterprise",
     price: 1000,
     status: "expired",
@@ -54,8 +57,41 @@ const mockSubscriptions = [
     teachers: 120,
     students: 3500,
     nextBilling: "N/A"
+  },
+  {
+    id: "SUB004",
+    schoolName: "Individual - John Mensah",
+    type: "teacher",
+    plan: "Individual Teacher",
+    price: 50,
+    status: "active",
+    startDate: "2024-01-10",
+    endDate: "2025-01-10",
+    teachers: 1,
+    students: 0,
+    nextBilling: "2024-02-10"
+  },
+  {
+    id: "SUB005",
+    schoolName: "Individual - Mary Asante",
+    type: "learner",
+    plan: "Individual Learner",
+    price: 20,
+    status: "active",
+    startDate: "2024-01-12",
+    endDate: "2025-01-12",
+    teachers: 0,
+    students: 1,
+    nextBilling: "2024-02-12"
   }
 ];
+
+const mockSubscriptionMetrics = {
+  activeSchoolLicenses: 2,
+  activeIndividualLearners: 145,
+  activeIndividualTeachers: 38,
+  trialSubscriptions: 1
+};
 
 const mockPricingPlans = [
   {
@@ -190,6 +226,19 @@ export default function Billing() {
     status: 'active'
   });
 
+  const [manageSubscriptionOpen, setManageSubscriptionOpen] = useState(false);
+  const [selectedSubscriptionId, setSelectedSubscriptionId] = useState<string | null>(null);
+  const [subscriptionAction, setSubscriptionAction] = useState<'allocate' | 'suspend' | 'upgrade' | null>(null);
+  const [licenseAllocation, setLicenseAllocation] = useState({
+    allocationType: 'school',
+    targetName: '',
+    licenseCount: 1
+  });
+  const [planUpgrade, setPlanUpgrade] = useState({
+    newPlan: '',
+    effectiveDate: ''
+  });
+
   const filteredSubscriptions = mockSubscriptions.filter(sub => {
     const matchesPlan = selectedPlan === 'all' || sub.plan.toLowerCase() === selectedPlan.toLowerCase();
     const matchesStatus = selectedStatus === 'all' || sub.status === selectedStatus;
@@ -254,6 +303,41 @@ export default function Billing() {
       cancelled: "outline"
     };
     return <Badge variant={variants[status] || "outline"}>{status}</Badge>;
+  };
+
+  const handleManageSubscription = (subId: string, action: 'allocate' | 'suspend' | 'upgrade') => {
+    setSelectedSubscriptionId(subId);
+    setSubscriptionAction(action);
+    setManageSubscriptionOpen(true);
+  };
+
+  const handleAllocateLicense = () => {
+    toast({
+      title: "License Allocated",
+      description: `${licenseAllocation.licenseCount} license(s) allocated to ${licenseAllocation.targetName}`,
+    });
+    setManageSubscriptionOpen(false);
+    setLicenseAllocation({ allocationType: 'school', targetName: '', licenseCount: 1 });
+  };
+
+  const handleSuspendAccess = () => {
+    const sub = mockSubscriptions.find(s => s.id === selectedSubscriptionId);
+    toast({
+      title: "Access Suspended",
+      description: `Access for ${sub?.schoolName} has been suspended`,
+      variant: "destructive"
+    });
+    setManageSubscriptionOpen(false);
+  };
+
+  const handleUpgradePlan = () => {
+    const sub = mockSubscriptions.find(s => s.id === selectedSubscriptionId);
+    toast({
+      title: "Plan Updated",
+      description: `${sub?.schoolName} plan will be upgraded to ${planUpgrade.newPlan}`,
+    });
+    setManageSubscriptionOpen(false);
+    setPlanUpgrade({ newPlan: '', effectiveDate: '' });
   };
 
   return (
@@ -456,12 +540,35 @@ export default function Billing() {
           <div className="grid gap-4 md:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Subscriptions</CardTitle>
+                <CardTitle className="text-sm font-medium">Active School Licenses</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-primary">
-                  {mockSubscriptions.filter(s => s.status === 'active').length}
+                  {mockSubscriptionMetrics.activeSchoolLicenses}
                 </div>
+                <p className="text-xs text-muted-foreground mt-1">School subscriptions</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Active Individual Learners</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-secondary">
+                  {mockSubscriptionMetrics.activeIndividualLearners}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Individual student accounts</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Active Individual Teachers</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-accent">
+                  {mockSubscriptionMetrics.activeIndividualTeachers}
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">Individual teacher subscriptions</p>
               </CardContent>
             </Card>
             <Card>
@@ -469,25 +576,10 @@ export default function Billing() {
                 <CardTitle className="text-sm font-medium">Trial Subscriptions</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-secondary">
-                  {mockSubscriptions.filter(s => s.status === 'trial').length}
+                <div className="text-2xl font-bold text-destructive">
+                  {mockSubscriptionMetrics.trialSubscriptions}
                 </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-accent">GHS 42,000</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Churn Rate</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-destructive">5.2%</div>
+                <p className="text-xs text-muted-foreground mt-1">Active trial accounts</p>
               </CardContent>
             </Card>
           </div>
@@ -539,7 +631,8 @@ export default function Billing() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>School</TableHead>
+                    <TableHead>School/User</TableHead>
+                    <TableHead>Type</TableHead>
                     <TableHead>Plan</TableHead>
                     <TableHead>Price</TableHead>
                     <TableHead>Status</TableHead>
@@ -552,17 +645,40 @@ export default function Billing() {
                   {filteredSubscriptions.map((sub) => (
                     <TableRow key={sub.id}>
                       <TableCell className="font-medium">{sub.schoolName}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {sub.type === 'school' ? 'School' : sub.type === 'teacher' ? 'Teacher' : 'Learner'}
+                        </Badge>
+                      </TableCell>
                       <TableCell>{sub.plan}</TableCell>
                       <TableCell>GHS {sub.price}/month</TableCell>
                       <TableCell>{getStatusBadge(sub.status)}</TableCell>
                       <TableCell>{sub.teachers}/{sub.students}</TableCell>
                       <TableCell>{sub.nextBilling}</TableCell>
                       <TableCell>
-                        <div className="flex gap-2">
-                          <Button variant="ghost" size="sm">
+                        <div className="flex gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleManageSubscription(sub.id, 'allocate')}
+                            title="Allocate/Reassign License"
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleManageSubscription(sub.id, 'suspend')}
+                            title="Suspend/Revoke Access"
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="sm">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleManageSubscription(sub.id, 'upgrade')}
+                            title="Upgrade/Downgrade Plan"
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
                         </div>
@@ -574,6 +690,141 @@ export default function Billing() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        {/* Manage Subscription Dialog */}
+        <Dialog open={manageSubscriptionOpen} onOpenChange={setManageSubscriptionOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>
+                {subscriptionAction === 'allocate' && 'Allocate/Reassign License'}
+                {subscriptionAction === 'suspend' && 'Suspend/Revoke Access'}
+                {subscriptionAction === 'upgrade' && 'Upgrade/Downgrade Plan'}
+              </DialogTitle>
+              <DialogDescription>
+                {subscriptionAction === 'allocate' && 'Allocate or reassign licenses between schools, teachers, and learners'}
+                {subscriptionAction === 'suspend' && 'Suspend or revoke access for unpaid or expired accounts'}
+                {subscriptionAction === 'upgrade' && 'Upgrade or downgrade user plans manually'}
+              </DialogDescription>
+            </DialogHeader>
+
+            {subscriptionAction === 'allocate' && (
+              <div className="space-y-4">
+                <div>
+                  <Label>Allocation Type</Label>
+                  <Select 
+                    value={licenseAllocation.allocationType} 
+                    onValueChange={(value) => setLicenseAllocation({...licenseAllocation, allocationType: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="school">School</SelectItem>
+                      <SelectItem value="teacher">Teacher</SelectItem>
+                      <SelectItem value="learner">Learner</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Target Name/Email</Label>
+                  <Input 
+                    placeholder="Enter name or email"
+                    value={licenseAllocation.targetName}
+                    onChange={(e) => setLicenseAllocation({...licenseAllocation, targetName: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <Label>Number of Licenses</Label>
+                  <Input 
+                    type="number"
+                    min="1"
+                    value={licenseAllocation.licenseCount}
+                    onChange={(e) => setLicenseAllocation({...licenseAllocation, licenseCount: parseInt(e.target.value)})}
+                  />
+                </div>
+              </div>
+            )}
+
+            {subscriptionAction === 'suspend' && (
+              <div className="space-y-4">
+                <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-md">
+                  <p className="text-sm text-destructive font-medium mb-2">Warning</p>
+                  <p className="text-sm text-muted-foreground">
+                    Suspending access will immediately revoke all privileges for this subscription. 
+                    The user will not be able to access the platform until reactivated.
+                  </p>
+                </div>
+                <div>
+                  <Label>Reason for Suspension</Label>
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select reason" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="unpaid">Unpaid Subscription</SelectItem>
+                      <SelectItem value="expired">Expired Account</SelectItem>
+                      <SelectItem value="violation">Terms Violation</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+
+            {subscriptionAction === 'upgrade' && (
+              <div className="space-y-4">
+                <div>
+                  <Label>New Plan</Label>
+                  <Select 
+                    value={planUpgrade.newPlan} 
+                    onValueChange={(value) => setPlanUpgrade({...planUpgrade, newPlan: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select new plan" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="basic">Basic - GHS 200/month</SelectItem>
+                      <SelectItem value="standard">Standard - GHS 300/month</SelectItem>
+                      <SelectItem value="premium">Premium - GHS 500/month</SelectItem>
+                      <SelectItem value="enterprise">Enterprise - GHS 1000/month</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Effective Date</Label>
+                  <Input 
+                    type="date"
+                    value={planUpgrade.effectiveDate}
+                    onChange={(e) => setPlanUpgrade({...planUpgrade, effectiveDate: e.target.value})}
+                  />
+                </div>
+                <div className="bg-primary/10 border border-primary/20 p-4 rounded-md">
+                  <p className="text-sm text-muted-foreground">
+                    The plan change will be reflected on the selected effective date. 
+                    Pricing will be prorated accordingly.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setManageSubscriptionOpen(false)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => {
+                  if (subscriptionAction === 'allocate') handleAllocateLicense();
+                  else if (subscriptionAction === 'suspend') handleSuspendAccess();
+                  else if (subscriptionAction === 'upgrade') handleUpgradePlan();
+                }}
+              >
+                {subscriptionAction === 'allocate' && 'Allocate'}
+                {subscriptionAction === 'suspend' && 'Suspend Access'}
+                {subscriptionAction === 'upgrade' && 'Update Plan'}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <TabsContent value="pricing" className="space-y-6">
           <Card>
