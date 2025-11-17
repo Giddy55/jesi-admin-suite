@@ -704,38 +704,70 @@ export default function Billing() {
 
             {subscriptionAction === 'allocate' && (
               <div className="space-y-4">
-                <div>
-                  <Label>Allocation Type</Label>
-                  <Select 
-                    value={licenseAllocation.allocationType} 
-                    onValueChange={(value) => setLicenseAllocation({...licenseAllocation, allocationType: value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="school">School</SelectItem>
-                      <SelectItem value="teacher">Teacher</SelectItem>
-                      <SelectItem value="learner">Learner</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="bg-muted/50 border border-border rounded-md p-4">
+                  <div className="flex justify-between items-center mb-3">
+                    <Label className="text-sm font-semibold">Current License Users</Label>
+                    <Badge variant="outline">
+                      {(() => {
+                        const sub = mockSubscriptions.find(s => s.id === selectedSubscriptionId);
+                        return `${sub?.teachers || 0} Teachers, ${sub?.students || 0} Students`;
+                      })()}
+                    </Badge>
+                  </div>
+                  <div className="space-y-2 max-h-[150px] overflow-y-auto">
+                    {/* Mock current users - replace with real data */}
+                    <div className="flex items-center justify-between text-sm bg-background p-2 rounded">
+                      <span className="text-muted-foreground">John Mensah (Teacher)</span>
+                      <span className="text-xs text-muted-foreground">Active</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm bg-background p-2 rounded">
+                      <span className="text-muted-foreground">Sarah Osei (Teacher)</span>
+                      <span className="text-xs text-muted-foreground">Active</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm bg-background p-2 rounded">
+                      <span className="text-muted-foreground">45 Students</span>
+                      <span className="text-xs text-muted-foreground">Active</span>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <Label>Target Name/Email</Label>
-                  <Input 
-                    placeholder="Enter name or email"
-                    value={licenseAllocation.targetName}
-                    onChange={(e) => setLicenseAllocation({...licenseAllocation, targetName: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <Label>Number of Licenses</Label>
-                  <Input 
-                    type="number"
-                    min="1"
-                    value={licenseAllocation.licenseCount}
-                    onChange={(e) => setLicenseAllocation({...licenseAllocation, licenseCount: parseInt(e.target.value)})}
-                  />
+                
+                <div className="pt-2 border-t">
+                  <p className="text-sm font-semibold mb-3">Allocate/Reassign License</p>
+                  <div className="space-y-3">
+                    <div>
+                      <Label>Allocation Type</Label>
+                      <Select 
+                        value={licenseAllocation.allocationType} 
+                        onValueChange={(value) => setLicenseAllocation({...licenseAllocation, allocationType: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="school">School</SelectItem>
+                          <SelectItem value="teacher">Teacher</SelectItem>
+                          <SelectItem value="learner">Learner</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Target Name/Email</Label>
+                      <Input 
+                        placeholder="Enter name or email"
+                        value={licenseAllocation.targetName}
+                        onChange={(e) => setLicenseAllocation({...licenseAllocation, targetName: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label>Number of Licenses</Label>
+                      <Input 
+                        type="number"
+                        min="1"
+                        value={licenseAllocation.licenseCount}
+                        onChange={(e) => setLicenseAllocation({...licenseAllocation, licenseCount: parseInt(e.target.value)})}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -768,36 +800,73 @@ export default function Billing() {
 
             {subscriptionAction === 'upgrade' && (
               <div className="space-y-4">
-                <div>
-                  <Label>New Plan</Label>
-                  <Select 
-                    value={planUpgrade.newPlan} 
-                    onValueChange={(value) => setPlanUpgrade({...planUpgrade, newPlan: value})}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select new plan" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="basic">Basic - GHS 200/month</SelectItem>
-                      <SelectItem value="standard">Standard - GHS 300/month</SelectItem>
-                      <SelectItem value="premium">Premium - GHS 500/month</SelectItem>
-                      <SelectItem value="enterprise">Enterprise - GHS 1000/month</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Effective Date</Label>
-                  <Input 
-                    type="date"
-                    value={planUpgrade.effectiveDate}
-                    onChange={(e) => setPlanUpgrade({...planUpgrade, effectiveDate: e.target.value})}
-                  />
-                </div>
-                <div className="bg-primary/10 border border-primary/20 p-4 rounded-md">
-                  <p className="text-sm text-muted-foreground">
-                    The plan change will be reflected on the selected effective date. 
-                    Pricing will be prorated accordingly.
+                <div className="bg-muted/50 border border-border rounded-md p-4">
+                  <Label className="text-sm font-semibold mb-3 block">Current Plan</Label>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-lg font-bold text-foreground">
+                        {(() => {
+                          const sub = mockSubscriptions.find(s => s.id === selectedSubscriptionId);
+                          return sub?.plan || 'Unknown';
+                        })()}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        GHS {(() => {
+                          const sub = mockSubscriptions.find(s => s.id === selectedSubscriptionId);
+                          return sub?.price || 0;
+                        })()}/month
+                      </p>
+                    </div>
+                    <Badge>
+                      {(() => {
+                        const sub = mockSubscriptions.find(s => s.id === selectedSubscriptionId);
+                        return sub?.status || 'Unknown';
+                      })()}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Next billing: {(() => {
+                      const sub = mockSubscriptions.find(s => s.id === selectedSubscriptionId);
+                      return sub?.nextBilling || 'N/A';
+                    })()}
                   </p>
+                </div>
+
+                <div className="pt-2 border-t">
+                  <p className="text-sm font-semibold mb-3">Change Plan</p>
+                  <div className="space-y-3">
+                    <div>
+                      <Label>New Plan</Label>
+                      <Select 
+                        value={planUpgrade.newPlan} 
+                        onValueChange={(value) => setPlanUpgrade({...planUpgrade, newPlan: value})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select new plan" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="basic">Basic - GHS 200/month</SelectItem>
+                          <SelectItem value="standard">Standard - GHS 300/month</SelectItem>
+                          <SelectItem value="premium">Premium - GHS 500/month</SelectItem>
+                          <SelectItem value="enterprise">Enterprise - GHS 1000/month</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Effective Date</Label>
+                      <Input 
+                        type="date"
+                        value={planUpgrade.effectiveDate}
+                        onChange={(e) => setPlanUpgrade({...planUpgrade, effectiveDate: e.target.value})}
+                      />
+                    </div>
+                    <div className="bg-primary/10 border border-primary/20 p-4 rounded-md">
+                      <p className="text-sm text-muted-foreground">
+                        The plan change will be reflected on the selected effective date. 
+                        Pricing will be prorated accordingly.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
