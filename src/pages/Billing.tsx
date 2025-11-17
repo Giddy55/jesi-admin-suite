@@ -94,6 +94,22 @@ const mockSubscriptionMetrics = {
   trialSubscriptions: 1
 };
 
+const mockLicenseUsers = {
+  teachers: [
+    { id: "T001", name: "John Mensah", status: "Active" },
+    { id: "T002", name: "Sarah Osei", status: "Active" },
+    { id: "T003", name: "Kwame Boateng", status: "Active" },
+    { id: "T004", name: "Abena Adjei", status: "Active" },
+  ],
+  students: [
+    { id: "S001", name: "Michael Asante", status: "Active" },
+    { id: "S002", name: "Grace Mensah", status: "Active" },
+    { id: "S003", name: "David Owusu", status: "Active" },
+    { id: "S004", name: "Ama Serwaa", status: "Active" },
+    { id: "S005", name: "Isaac Darko", status: "Active" },
+  ]
+};
+
 const mockPricingPlans = [
   {
     id: "basic",
@@ -715,19 +731,19 @@ export default function Billing() {
                     </Badge>
                   </div>
                   <div className="space-y-2 max-h-[150px] overflow-y-auto">
-                    {/* Mock current users - replace with real data */}
-                    <div className="flex items-center justify-between text-sm bg-background p-2 rounded">
-                      <span className="text-muted-foreground">John Mensah (Teacher)</span>
-                      <span className="text-xs text-muted-foreground">Active</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm bg-background p-2 rounded">
-                      <span className="text-muted-foreground">Sarah Osei (Teacher)</span>
-                      <span className="text-xs text-muted-foreground">Active</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm bg-background p-2 rounded">
-                      <span className="text-muted-foreground">45 Students</span>
-                      <span className="text-xs text-muted-foreground">Active</span>
-                    </div>
+                    {/* Mock current users */}
+                    {mockLicenseUsers.teachers.map((teacher) => (
+                      <div key={teacher.id} className="flex items-center justify-between text-sm bg-background p-2 rounded">
+                        <span className="text-muted-foreground">{teacher.name} (Teacher)</span>
+                        <span className="text-xs text-muted-foreground">{teacher.status}</span>
+                      </div>
+                    ))}
+                    {mockLicenseUsers.students.map((student) => (
+                      <div key={student.id} className="flex items-center justify-between text-sm bg-background p-2 rounded">
+                        <span className="text-muted-foreground">{student.name} (Student)</span>
+                        <span className="text-xs text-muted-foreground">{student.status}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
                 
@@ -752,11 +768,45 @@ export default function Billing() {
                     </div>
                     <div>
                       <Label>Target Name/Email</Label>
-                      <Input 
-                        placeholder="Enter name or email"
-                        value={licenseAllocation.targetName}
-                        onChange={(e) => setLicenseAllocation({...licenseAllocation, targetName: e.target.value})}
-                      />
+                      {licenseAllocation.allocationType === 'teacher' ? (
+                        <Select 
+                          value={licenseAllocation.targetName}
+                          onValueChange={(value) => setLicenseAllocation({...licenseAllocation, targetName: value})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select teacher" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mockLicenseUsers.teachers.map((teacher) => (
+                              <SelectItem key={teacher.id} value={teacher.name}>
+                                {teacher.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : licenseAllocation.allocationType === 'learner' ? (
+                        <Select 
+                          value={licenseAllocation.targetName}
+                          onValueChange={(value) => setLicenseAllocation({...licenseAllocation, targetName: value})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select learner" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mockLicenseUsers.students.map((student) => (
+                              <SelectItem key={student.id} value={student.name}>
+                                {student.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input 
+                          placeholder="Enter school name"
+                          value={licenseAllocation.targetName}
+                          onChange={(e) => setLicenseAllocation({...licenseAllocation, targetName: e.target.value})}
+                        />
+                      )}
                     </div>
                     <div>
                       <Label>Number of Licenses</Label>
