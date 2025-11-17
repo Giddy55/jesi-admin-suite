@@ -411,13 +411,32 @@ export default function Schools() {
                             setSelectedSchool(school);
                             setUsersDialogOpen(true);
                           }}>
-                            Manage School Users
+                            Manage School Admin
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => {
-                            setSelectedSchool(school);
-                            setAnalyticsDialogOpen(true);
+                            if (confirm(`Reset passwords for all users in ${school.name}?`)) {
+                              toast({
+                                title: "Passwords Reset",
+                                description: `Password reset emails sent to all users in ${school.name}`,
+                              });
+                            }
                           }}>
-                            School Analytics
+                            Reset Passwords for School
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem 
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to delete ${school.name}? This action cannot be undone.`)) {
+                                toast({
+                                  title: "School Deleted",
+                                  description: `${school.name} has been deleted`,
+                                  variant: "destructive",
+                                });
+                              }
+                            }}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            Delete School
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

@@ -202,10 +202,10 @@ export default function ManageSchoolUsersDialog({ school, open, onOpenChange }: 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Manage Users - {school.name}
+            Manage School Admin - {school.name}
           </DialogTitle>
           <DialogDescription>
-            Manage teachers, students, and administrative staff for this school
+            Add users, assign school admin, and manage access for this school
           </DialogDescription>
         </DialogHeader>
 
@@ -305,8 +305,59 @@ export default function ManageSchoolUsersDialog({ school, open, onOpenChange }: 
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => handleEditUser(user)}>Edit</Button>
-                    <Button variant="outline" size="sm" className="text-destructive" onClick={() => handleRemoveUser(user)}>Remove</Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm">
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleEditUser(user)}>
+                          Edit User
+                        </DropdownMenuItem>
+                        {user.role !== 'Admin' && (
+                          <DropdownMenuItem onClick={() => {
+                            if (confirm(`Assign ${user.name} as School Admin?`)) {
+                              toast({
+                                title: "Admin Assigned",
+                                description: `${user.name} is now a School Admin.`,
+                              });
+                            }
+                          }}>
+                            Make School Admin
+                          </DropdownMenuItem>
+                        )}
+                        {user.role === 'Admin' && (
+                          <DropdownMenuItem onClick={() => {
+                            if (confirm(`Remove admin privileges from ${user.name}?`)) {
+                              toast({
+                                title: "Admin Removed",
+                                description: `${user.name} is no longer a School Admin.`,
+                              });
+                            }
+                          }}>
+                            Remove Admin Role
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuItem onClick={() => {
+                          if (confirm(`Send password reset email to ${user.email}?`)) {
+                            toast({
+                              title: "Password Reset",
+                              description: `Password reset link sent to ${user.email}`,
+                            });
+                          }
+                        }}>
+                          Reset Password
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          onClick={() => handleRemoveUser(user)}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          Remove User
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
               </div>
