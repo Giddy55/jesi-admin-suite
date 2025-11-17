@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Building2, MapPin, Mail, Phone, Calendar, Crown, CreditCard } from 'lucide-react';
+import { Building2, MapPin, Mail, Phone, Calendar, Crown, CreditCard, Users } from 'lucide-react';
 import { type School } from '@/lib/mockData';
 
 interface SchoolDetailsDialogProps {
@@ -95,6 +95,34 @@ export default function SchoolDetailsDialog({ school, open, onOpenChange }: Scho
             <Badge variant="secondary" className="text-sm">
               {school.school_type}
             </Badge>
+          </div>
+
+          <Separator />
+
+          {/* Activity Metrics Overview */}
+          <div className="space-y-3">
+            <h4 className="font-semibold text-foreground flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Activity Metrics Overview
+            </h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-primary/5 p-4 rounded-lg">
+                <p className="text-sm text-muted-foreground mb-1">Teachers</p>
+                <p className="text-2xl font-bold text-foreground">24</p>
+              </div>
+              <div className="bg-success/5 p-4 rounded-lg">
+                <p className="text-sm text-muted-foreground mb-1">Learners</p>
+                <p className="text-2xl font-bold text-foreground">486</p>
+              </div>
+              <div className="bg-warning/5 p-4 rounded-lg">
+                <p className="text-sm text-muted-foreground mb-1">Lessons Created</p>
+                <p className="text-2xl font-bold text-foreground">142</p>
+              </div>
+              <div className="bg-accent/5 p-4 rounded-lg">
+                <p className="text-sm text-muted-foreground mb-1">Avg Usage/Week</p>
+                <p className="text-2xl font-bold text-foreground">18h</p>
+              </div>
+            </div>
           </div>
 
           <Separator />
