@@ -622,6 +622,12 @@ export default function Schools() {
         open={editUserDialogOpen}
         onOpenChange={setEditUserDialogOpen}
       />
+
+      <AddSchoolDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+        onSuccess={fetchSchools}
+      />
     </div>
   );
 }
